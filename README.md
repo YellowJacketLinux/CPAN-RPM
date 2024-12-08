@@ -12,9 +12,10 @@ changes.
 
 ### Copyright and License
 
-All RPM spec files in this project a Creative Commons ‘CC0 1.0 Universal’
-(effectively Public Domain). See the file `LICENSE` at the top level of this
-project. However some files in the `SOURCES` directory are not.
+All RPM spec files in this project are licensed under Creative Commons ‘CC0 1.0
+Universal’ (effectively Public Domain). See the file `LICENSE` at the top level
+of this project. Files in the `SOURCES` directory however typically do not fall
+under that license.
 
 Any patches in the `SOURCES` directory fall under the same license as the CPAN
 distribution they patch, and license files within that directory (for CPAN
