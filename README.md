@@ -74,6 +74,11 @@ user needs to use `cpanm` to install something they need.
 RPM SPEC FILE SPECIFICATION
 ---------------------------
 
+Please note that not all of RPM spec files currently meet my own specification.
+This is because my own specification has evolved while creating them. Part of
+the reason for this git repository is to allow myself to create issues I can
+use to remind myself of what packages need adjusting.
+
 ### Build System Prerequisites
 
 The following perl-specific RPM macros are expected to be defined on the system
@@ -92,12 +97,13 @@ but unless I am made aware that it is an issue, I assume those RPM macros are
 defined on the system building one the RPM spec files in this project.
 
 The `perl` package __MUST__ have the virtual `perl(:VERSION)` provide defined to
-the Perl version integer triplet (e.g. `5.8.1` opposed to the float `5.008001`).
+the Perl version integer triplet (e.g. `5.8.1` or `5.40.0` opposed to the float
+`5.008001` or `5.040`).
 
 Due to the epoch mess caused by Perl’s use of a float for their version
 number (pun intended), the `perl(:VERSION)` virtual provide is the *only* way
 to check the version of Perl in an RPM-compatible way. As far as I know, every
-RPM-based GNU/Linux distribution defines that virtual provides in the RPM
+RPM-based GNU/Linux distribution defines that virtual provide in the RPM
 package that contains the `%{_bindir}/perl` executable. That *should* be part
 of the LSB standard but the LSB seems to be dead, with no new release since
 2015.
@@ -161,7 +167,18 @@ is not ideal.
 
 ### RPM Spec File Requirements
 
-Foo
+The very top (first) line of the RPM spec file should define the CPAN name of
+the CPAN distribution being built. This is the name used in the source tarball.
+The CPAN name is defined in the `cpanname` macro. For example:
+
+    %global cpanname Math-Random-ISAAC
+
+The `Name:` field of the main package *must* be defined as:
+
+    Name:     perl-%{cpanname}
+
+The RPM `.spec` file name should match. In the above example, the RPM file name
+would be `perl-Math-Random-ISAAC.spec` to match the main package name.
 
 
     
