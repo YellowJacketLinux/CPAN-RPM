@@ -6,7 +6,9 @@ RPM Spec Files for CPAN distributions
 This document does not exceed 80 characters in width *however* it does use a
 few multi-byte characters (all from ISO-8859-15) that may cause some lines to
 exceed 80 characters in width on systems without native font support for those
-glyphs in their console font.
+glyphs in their console font. The actual character encoding of this document is
+UTF8, but it can be converted to ISO-8859-15 (or Windows/CP-1252) without glyph
+changes.
 
 ### Copyright and License
 
