@@ -49,7 +49,7 @@ Secondarily, I want to make things as painless as possible for users who need
 to use `cpanm` or a related tool to install distributions from CPAN that are
 not available in YJL as RPM packages. That means all four of the primarily used
 installer (`ExtUtils::MakeMaker`, `Module::Build`, `Module::Build::Tiny`, and
-`inc::Module::Install) as well as `Alien`, `Moose` (and derivatives), and a
+`inc::Module::Install`) as well as `Alien`, `Moose` (and derivatives), and a
 plethora of `Test::` and `Test2::` related distributions.
 
 Finally but at the lowest priority, commonly used distributions from CPAN that
