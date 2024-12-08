@@ -66,9 +66,9 @@ The following perl-specific RPM macros are expected to be defined on the system
 building the spec file:
 
 * `%perl5_vendorlib` (base `@INC` directory for RPM-packaged non-core `noarch`
-  Perl modules
+  Perl modules)
 * `%perl5_vendorarch` (base `@INC` directory for RPM-packaged non-core
-  hardware-specific Perl modules
+  hardware-specific Perl modules)
 
 Those macro definitions are *traditionally* defined in an RPM macro file that is
 owned by the `perl-devel` package. However I can not guarantee that all RPM
@@ -90,9 +90,64 @@ of the LSB standard but the LSB seems to be dead, with no new release since
 
 #### Module Compatibility
 
+The RPM spec files in this repository provide two ways to bind an RPM package
+to the version of Perl the RPM was built for.
+
+The ‘Red Hat Way’ (which I believe is also used by most other RPM-based
+GNU/Linux distributions) is to put the following in the `.spec` file:
+
+    Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+
+That means the distribution `perl` package has to have that as a virtual
+provide. The `.spec` files in this directory fall back to that method if the
+operating system does not use the YJL method for ensuring the Perl module will
+work.
+
+The first issue I have with that method is that `perl -V:version` gives the
+integer triplet version of Perl but the last part of the triplet is just the
+*patch level* and a new Perl maintenance release with a higher *patch level*
+should not require all add-on modules be rebuilt.
+
+The second issue I have with the ‘Red Hat Way’ is it does not ensure the RPM
+package is placing the modules within the proper perl `@INC` directory, which
+can and does vary between GNU/Linux distributions.
+
+YJL defines the following macros, in the same place where `%perl5_vendorlib`
+and `%perl5_vendorarch` are defined:
+
+    %perl5_os_platform %{_arch}-linux-thread-multi
+    %perl5_API perl(:%{perl5_version}:%{perl5_vendorlib})
+    %perl5_ABI perl(:%{perl5_version}:%{perl5_os_platform}:%{perl5_vendorarch})
+
+The latter two, `%perl5_API` and `%perl5_ABI`, expand to values provided by the
+YJL `perl` RPM package, and thus can be used as module compatibility requires
+in module packages.
+
+The macro `%{perl5_version}` on YJL expands to the version of Perl *without*
+the patch level (e.g. `5.36` on YJL 6.1 and `5.40` on YJL 6.6) but for others
+implementing the same system, it is okay if you put the full version
+*including* the patch level if implementing the same scheme in another OS
+distribution.
+
+These macros include the Perl `@INC` directory that RPM packages will put their
+module files into, thus ensuring that the package only installs on systems
+where it will actually be usable after installation.
+
+For `noarch` RPM packages, I use
+
+    Requires: %perl5_API
+
+For `x86_64` RPM packages, I use
+
+    Requires: %perl5_ABI
+
+The RPM `.spec` files in this project *only* use those `Requires` if they are
+defined. Otherwise, they fall back to the ‘Red Hat Way’ which works, but just
+is not ideal.
+
+### RPM Spec File Requirements
+
 Foo
-
-
 
 
     
