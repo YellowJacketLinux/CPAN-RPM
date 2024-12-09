@@ -167,6 +167,8 @@ is not ideal.
 
 ### RPM Spec File Requirements
 
+#### `%{cpanname}` related metadata
+
 The very top (first) line of the RPM spec file should define the CPAN name of
 the CPAN distribution being built. This is the name used in the source tarball.
 The CPAN name is defined in the `cpanname` macro. For example:
@@ -179,6 +181,19 @@ The `Name:` field of the main package *must* be defined as:
 
 The RPM `.spec` file name should match. In the above example, the RPM file name
 would be `perl-Math-Random-ISAAC.spec` to match the main package name.
+
+The `URL:` field of the main package *must* be defined as:
+
+    https://metacpan.org/dist/%{cpanname}
+
+Many projects on CPAN have their own project homepage. However the CPAN link is
+much less likely to change or vanish over time.
+
+#### Version metada
+
+The `Version:` field *must* match the version number in the source tarball
+*unless* the version number in the source tarball starts with `v` in which case
+the `v` should be omitted.
 
 
     
