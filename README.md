@@ -226,6 +226,98 @@ Fortunately, at the start of this project, most CPAN authors are aware of the
 issue and pad the version themselves, so hopefully a remedy by the RPM packager
 will rarely be needed.
 
+When a perl version starts with a `v`, that actually tells the Perl version
+parser that the version is integer fields delimited by a `.` which is exactly
+how RPM already views versions, so removing the `v` from the `Version:` field
+is both safe and avoids RPM from interpreting the `v` as part of the version
+which would invoke string comparisons instead of ingeger comparisons.
+
+#### Release Metadata
+
+This is the scheme used by Yellow Jacket GNU/Linux:
+
+    Release:  %{?repo}0.rc1%{?dist}
+
+The `%{?repo}` macro *if defined* must end with a `.` and the fairly standard
+`%{?dist}` macro *if defined* must begin with a `.`. When defined, those macros
+are defined on the build system, not in the RPM spec file.
+
+In YJL, for the CPAN repository, `%{?repo}` expands to `3.cpan.` and for
+YJL 6.6, %{?dist} expands to `.yjl606`. Obviously if building the RPM spec
+files elsewhere, if those macros expand at all they will expand to something
+different.
+
+Between those build-system defined macros, non-test releases will have a non-
+negative odd integer such as a `1`, `3`, `5`, etc.
+
+Test releases will have a non-negative even integer such as a `0`, `2`, `4`,
+etc. followed by a `.` which is then followed by either `dev` (Development) or
+`rc` (Release Candidate) followed directly by a positive integer.
+
+The way RPM evaluates strings, a leading `rc` will always be viewed as newer
+than a leading `dev` so there is no need to increment the leading even integer
+when moving from a `dev` release to a `rc` release of the same version.
+
+In the `%changelog`, only the part of the `Release:` tag *between* the
+`%{?repo}` and `%{?dist}` are used to identify the changelog entry.
+
+#### Source Metadata
+
+The `Source0:` field needs to point to the full URL of the source tarball from
+CPAN. The ‘tarball’ part of the link should be expressed in terms of macros.
+In most cases, it will be:
+
+    %{cpanname}-%{version}.tar.gz
+
+In the few cases where the version on CPAN starts with a `v` then instead:
+
+    %{cpanname}-v%{version}.tar.gz
+
+Note that the full link on CPAN includes the current maintainer of the CPAN
+distribution as part of the hyperlink. Sometimes the current maintainer
+changes, so that needs to be checked every time a spec file is updated to a
+different version of the distribution.
+
+#### Summary and Description
+
+The `Summary:` field should generally not contain a summary that is longer than
+70 characters in width.
+
+The `%description` section should target lines that are at most 65 characters in
+width and *never* exceed 70 characters in width.
+
+For English `Summary:` and `%description` fields, it is best to only use
+characters that are single-byte in UTF-8 (basically the ISO-8859-1 set of
+glyphs) but sometimes using multi-byte glyphs is not avoidable.
+
+For `Summary:` and `%description` fields in other languages, it often is not
+possible to avoid the use of multi-byte glyphs.
+
+Within the `%description` section, module names and functions and executables
+should be encased within back-ticks and items of emphasis should be encased
+with asterisks. For example:
+
+    %description
+    `Fubar::Foo::Bar` is a module that only exports the `fubar()`
+    function. This module is very effective at messing up your Perl
+    program, so only use it when you *want* things to seriously break.
+
+Presently, *most* of the RPM spec files in this git project take their summary
+and description directly from the POD for the main module in the distribution.
+Sometimes that is appropriate but in other cases, it it not.
+
+The summaries and descriptions need to be properly cleaned up before they can be
+translated into other languages, which is something I hope to see happen. Call
+me woke, but I really wish more people who do not speak English as their primary
+language could read RPM package metadata in their preferred language.
+
+
+
+
+
+
+
+
 
 
 
