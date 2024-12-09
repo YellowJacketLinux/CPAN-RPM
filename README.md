@@ -643,4 +643,19 @@ or `Module::Build::Tiny`.
 
 When a CPAN distribution contains both, it uses `Module::Build` but has a
 compatibility wrapper allowing `ExtUtils::MakeMaker` to be used. Do not use the
-compatibility wrapprt, just use `Module::Build` to build it.
+compatibility wrapper, just use `Module::Build` to build it.
+
+The system used is easily identified at the top of the `Makefile.PL` or
+`Build.PL` script. It needs to be a `BuildRequires`, I like to put it right
+after the `BuildRequires: perl-devel` so that it is easy to identify the CPAN
+build system used when reading the spec file. For example:
+
+    BuildRequires: perl(:VERSION) >= 5.8.1
+    BuildRequires: perl-devel
+    BuildRequires: perl(Module::Build::Tiny)
+    %if 0%{?!cpansigverify_skip:1} == 1
+    BuildRequires: cpansign >= 0.82
+    %endif
+    #
+
+All other `BuildRequires` then follow *preferably* in alphabetical order.
