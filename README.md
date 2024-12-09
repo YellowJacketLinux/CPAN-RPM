@@ -470,18 +470,23 @@ a ‘Best Practice’ to add all runtime dependencies as `BuildRequires` as well
 adding them as `Requires` even if they technically are not needed to install
 and test the module.
 
+All Perl modules that are runtime dependencies need to be specified as runtime
+dependencies with a `Requires:` field. Assumptions about what is already
+installed *should not be made*.
+
 For runtime dependencies, I do include `perl(strict)` and `perl(warnings)` when
 they are runtime dependencies.
 
-The CPAN distributions *usually* specify what non-Core runtime dependencies are
-needed but they quite frequently make assumptions that modules distributed as
-part of “Perl Core” are present. Sometimes they forget to specify a module. The
-best thing to do, despite it being very time consuming, is to manually check
-each module installed by the CPAN distribution for its dependencies.
+The CPAN distribution `META.yml` *usually* specify what non-Core runtime
+dependencies are needed but they quite frequently make assumptions that modules
+distributed as part of “Perl Core” are present. Sometimes they forget to specify
+a module. The best thing to do, despite it being very time consuming, is to
+manually check each module installed by the CPAN distribution for its
+dependencies.
 
 Sometimes a dependency is a fall-back dependency that is only needed if another
 dependency is not met. If that other dependency already has a `Requires` in the
-RPM spec file, there is not a need to also `Require` the fall-back.
+RPM spec file, there is not a need to also `Requires` the fall-back.
 
 ### Dependency Versions
 
