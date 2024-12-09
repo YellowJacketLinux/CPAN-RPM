@@ -534,6 +534,45 @@ Sometimes a single source file provides more than one module (more than one
 `package` defined in the file). In such cases, I only create a single
 `Provides:` that matches what is expected for the source file name.
 
+### Module Install Compatibility
+
+The RPM spec file (and resulting `.src.rpm`) *hopefully* will be buildable on
+most RPM based GNU/Linux distributions with the minimum required Perl version
+but the installable RPM package will only work on distributions with the same
+Perl version *and* `@INC` scheme for vendor packaged modules.
+
+To avoid the installable RPM package installing on GNU/Linux distributions with
+a different Perl version and/or `@INC` scheme, the RPM spec file needs to have
+a conditional block.
+
+#### `.noarch.rpm` target:
+
+    %if 0%{?perl5_API:1} == 1
+    Requires: %{perl5_API}
+    %else
+    Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+    Requires: %{perl5_vendorlib}
+    %endif
+
+On YJL and other system that use the previously described `%{perl5_API}` macro,
+that macro limits where it can be installed. For distributions without that
+macro, it falls back to the ‘Red Hat Way’ with the additional requirement of
+ensuring the directory defined by `%{perl5_vendorlib}` exists for use.
+
+#### Binary target:
+
+    %if 0%{?perl5_API:1} == 1
+    Requires: %{perl5_ABI}
+    %else
+    Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+    Requires: %{perl5_vendorarch}
+    %endif
+
+On YJL and other system that use the previously described `%{perl5_ABI}` macro,
+that macro limits where it can be installed. For distributions without that
+macro, it falls back to the ‘Red Hat Way’ with the additional requirement of
+ensuring the directory defined by `%{perl5_vendorarch}` exists for use.
+
 
 The `%prep` section
 -------------------
@@ -580,4 +619,22 @@ texts of those licenses would thus start like thus:
 CPAN Distribution Build
 -----------------------
 
-foo
+There may be more, but there are four systems for building and installing CPAN
+distributions that are commonly encountered. Listed in the order of how
+frequently I encounter them:
+
+* `perl(ExtUtils::MakeMaker)` *(part of “Perl Core”)*
+* `perl(Module::Build)` *(formerly part of “Perl Core”)*
+* `perl(Module::Build::Tiny)
+* `perl(inc::Module::Install) *(A wrapper for `ExtUtils::MakeMaker`)*
+
+When a CPAN distribution has a `Makefile.PL` script, it *probably* uses either
+`ExtUtils::MakeMaker` or `inc::Module::Install` as the build system. If there
+is *also* a `Build.pl` script, ignore the presence of the `Makefile.PL` script.
+
+When a CPAN distribution has a `Build.PL` script, it uses either `Module::Build`
+or `Module::Build::Tiny`.
+
+When a CPAN distribution contains both, it uses `Module::Build` but has a
+compatibility wrapper allowing `ExtUtils::MakeMaker` to be used. Do not use the
+compatibility wrapprt, just use `Module::Build` to build it.
