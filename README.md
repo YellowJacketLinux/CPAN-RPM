@@ -705,12 +705,47 @@ modern versions of Perl/MakeMaker, as it seems to get the right flags to use
 from how Perl itself was configured, but it still does not hurt to have it.
 Generally, `$RPM_OPT_FLAGS` tend to be a little more aggressive than default
 flags with respect to security (e.g. `-D_FORTIFY_SOURCE=2` and
-`-fstack-protector-strong`) and are good to use.
+`-fstack-protector-strong`) and are good to use. Of course with `.noarch`
+packages that option is meaningless, but it does not hurt either.
 
 Sometimes, specific CPAN distributions will need a modification to the above
 `%build` section. Typically additional options can be discovered by reading the
 `INSTALL` file (if present), the `README` file, or the `Makefile.PL` file.
 
-### The `%build` Section for `Makefile.PM`
+`make %{?_smp_mflags}` builds the package.
+
+### The `%build` Section for `Build.PM`
+
+For `Module::Build` and `Module::Build::Tiny` the `%build` section is *almost*
+identical. For `Module::Build` it *generally* should look like this:
+
+    %build
+    PERL_MM_USE_DEFAULT=1   \
+    MODULEBUILDRC=/dev/null \
+    perl Build.PL --installdirs vendor
+    ./Build
+
+The `PERL_MM_USE_DEFAULT=1` environmental variable tells `Build.PL` that you do
+not want an interactive build, and to use defaults where it might ask you
+questions.
+
+The `MODULEBUILDRC=/dev/null` environmental variable ensures that
+`Module::Build` does not use a local configuration you might happen to have as
+a result of locally building Perl modules outside of RPM.
+
+That line is not needed for `Module::Build::Tiny` as it already does not make
+use of such configuration files.
+
+The `--installdirs vendor` option tells `Build.PL` that the perl modules should
+be installed in the vendor `@INC` directory, which is specifically for Perl
+modules installed from an installation package.
+
+The final `./Build` line builds the package.
+
+Sometimes, specific CPAN distributions will need a modification to the above
+`%build` section. Typically additional options can be discovered by reading the
+`INSTALL` file (if present), the `README` file, or the `Build.PL` file.
+
+### The `%install` Section for `Makefile.PM`
 
 
