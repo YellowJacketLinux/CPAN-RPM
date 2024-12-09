@@ -15,10 +15,16 @@ booting without a GUI where bitmap fonts are used.
 
 ### Copyright and License
 
+This README file is (c)2024 Michael A. Peters and licensed under the ‘GNU Free
+Document License version 1.3’ as described in the `fdl-1.3.txt` file in the top
+level of this project directory.
+
 All RPM spec files in this project are licensed under Creative Commons ‘CC0 1.0
-Universal’ (effectively Public Domain). See the file `LICENSE` at the top level
-of this project. Files in the `SOURCES` directory however typically do not fall
-under that license.
+Universal’ (effectively Public Domain). See the file `LICENSE` in the `SPECS`
+directory of this project.
+
+Note that Files in the `SOURCES` directory however typically do not fall under
+either of those licenses.
 
 Any patches in the `SOURCES` directory fall under the same license as the CPAN
 distribution they patch, and license files within that directory (for CPAN
