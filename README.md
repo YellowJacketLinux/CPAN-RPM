@@ -311,22 +311,45 @@ translated into other languages, which is something I hope to see happen. Call
 me woke, but I really wish more people who do not speak English as their primary
 language could read RPM package metadata in their preferred language.
 
+#### Group Metadata
 
+What to do with the `Group:` field in an RPM spec file is something I am still
+pondering.
 
+#### License
 
+Most of my current spec files as they sit in my home directory do this
+incorrectly. Cleanup is underway, this is important to do correctly.
 
+When a CPAN distribution comes with a proper `LICENSE` (or related) file, life
+is good. That file should be included in the `%files` section using *both* the
+`%license` macro __and__ the `%doc` macro. When the license has a SPDX
+identifier (see https://spdx.org/licenses/ ) that identifier should be used in
+the RPM spec file `License:` field.
 
+More than one package I have encountered have a `LICENCE` file that specifies
+both ‘GPL 1.0 or later or Artistic 1.0’ but then in includes the text of the
+GPL 2.0 license and the Artistic 1.0 license. Since that is the case with more
+than just a few CPAN distributions I have to assume it is the result of a bug
+in a program that generated the `LICENSE` file for the author.
 
+In those cases due to the ambiguity, I pick the included license text and use:
 
+    License: GPL-2.0-or-later or Artistic-1.0-Perl
 
+Many distributions on CPAN specify the license terms but fail to include the
+actual license text. In these cases, the actual license texts are added as a
+source file (starting with `Source90`) and should be included with the
+`%license` macro but they should *not* be included with the `%doc` macro as
+they are not part of the original source code distribution.
 
+Usually in these cases, the license is mention in the `README` file but in some
+cases I have to hunt for it in a module POD.
 
-
-
-
-
-
-    
+What needs to happen, is in the `%prep` section of the spec file, a new file
+need to created that extracts the specified license terms *and* specifies what
+file the terms were extracted from that can also be packaged using the
+`%license` macro.
 
 
 
