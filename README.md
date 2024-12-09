@@ -8,7 +8,10 @@ few multi-byte characters (all from ISO-8859-15) that may cause some lines to
 exceed 80 characters in width on systems without native font support for those
 glyphs in their console font. The actual character encoding of this document is
 UTF8, but it can be converted to ISO-8859-15 (or Windows/CP-1252) without glyph
-changes.
+changes. Converting this document to ISO-8859-15 *may* fix the display of those
+multi-byte characters (curly apostraphe, single and double quotes) in GNU/Linux
+consoles without a proper UTF-8 font available, as is sometimes the case when
+booting without a GUI where bitmap fonts are used.
 
 ### Copyright and License
 
@@ -351,5 +354,84 @@ need to created that extracts the specified license terms *and* specifies what
 file the terms were extracted from that can also be packaged using the
 `%license` macro.
 
+BuildRequires, Requires, and Provides
+-------------------------------------
 
+Many GNU/Linux distributions have scriptlets that attempt to auto-detect what
+Perl modules a package provides and depends upon. My experience with those
+scriptlets is they *mostly* work but even though it is incredibly time
+consuming, it is better to manually define perl module dependencies. This does
+result in some mistakes but I honestly think it is better.
 
+The modules required to run the installer while creating the package always
+need to be manually defined.
+
+A difference in how Perl compares versions (as floats) with how RPM compares
+versions can also be an issue, but rarely so these days and the solution is
+generally easy.
+
+When defining the `BuildRequires:` fields, I assume that the following four
+modules are available on the system building the RPM spec file:
+
+* `perl(Test)`
+* `perl(Test::Harness)`
+* `perl(strict)`
+* `perl(warnings)`
+
+Any other modules that are needed to run the installer or the tests *must* be
+explicitly specified with a `BuildRequires:` field.
+
+### System Defined Perl Macros
+
+All spec files must *explicitly* require the `perl-devel` package:
+
+    BuildRequires: perl-devel
+
+That ensures that the `%perl5_vendorlib` and `%perl5_vendorarch` macros are
+defined.
+
+### Minimum Perl Version
+
+When the perl module has a minimum Perl version that is needed, the spec file
+*must* have
+
+    BuildRequires: perl(:VERSION) >= 5.m.n
+
+Where `m` is the second integer in the triplet and `n` is the patch level
+integer in the triplet.
+
+Sometimes the minimum perl version is specified as a float, so you may need
+to convert it.
+
+When described as a float, pad it with zeros to six decimal places. Then the
+first three decimals after the dot correspond with `m` and the second set of
+three correspon with the `n`. For example:
+
+    use 5.00801  = use 5.008010 is the triplet 5.8.10
+    use 5.04     = use 5.040000 is the triplet 5.40.0
+    use 5.00504  = use 5.005040 is the triplet 5.5.40
+
+Sometimes, the minimum Perl version is specified with a leading `v` in which
+case no padding is necessary, but if it only specifies two parts of the
+triplet, you should add a zero as the third. For example:
+
+    use v5.8 is the triplet 5.8.0
+
+### Signature Verification
+
+When a CPAN distribution has a `SIGNATURE` file, the RPM spec file *must*
+contain the following conditional `BuildRequires:`
+
+    %if 0%{?!cpansigverify_skip:1} == 1
+    BuildRequires: cpansign >= 0.82
+    %endif
+
+That is so the `cpansign` can be used to verify the integrity of the CPAN
+distribution. Build systems without an Internet connection will need to
+define the `%{cpansigverify_skip}` macro so that verification is skipped. This
+is the case with build systems like
+[Mock](https://rpm-software-management.github.io/mock/). However for end-user
+builds of a spec file or source RPM, signature verification should take place
+and the `cpansign` utility is needed for that. End users who really do not
+want to verify the integrity of the source tarball can define that macro in
+their `~/.rpmmacros` file. They also should get their head examined.
