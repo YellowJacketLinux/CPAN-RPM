@@ -9,7 +9,7 @@ exceed 80 characters in width on systems without native font support for those
 glyphs in their console font. The actual character encoding of this document is
 UTF8, but it can be converted to ISO-8859-15 (or Windows/CP-1252) without glyph
 changes. Converting this document to ISO-8859-15 *may* fix the display of those
-multi-byte characters (curly apostraphe, single and double quotes) in GNU/Linux
+multi-byte characters (curly apostrophe, single and double quotes) in GNU/Linux
 consoles without a proper UTF-8 font available, as is sometimes the case when
 booting without a GUI where bitmap fonts are used.
 
@@ -34,16 +34,16 @@ their respective owners.
 Git Purpose Description
 -----------------------
 
-In Yellow Jacket GNU/Linux, perl module distributions from CPAN will be
+In Yellow Jacket GNU/Linux, Perl module distributions from CPAN will be
 provided from a separate package repository from the main operating system
 package repository.
 
 This separate package repository will require the main operating system package
-repository (for perl itself, and for shared libraries some XS modules link
-against, and even occassionally an executable) and likewise, some packages in
+repository (for Perl itself, and for shared libraries some XS modules link
+against, and even occasionally an executable) and likewise, some packages in
 the main operating system RPM package repository will require the CPAN package
-repository (such as `git`, for its perl modules and for its `/usr/libexec/git`
-perl scripts).
+repository (such as `git`, for its Perl modules and for its `/usr/libexec/git`
+Perl scripts).
 
 In some cases, RPM packages in this package repository will replace modules
 that are installed as part of “Perl Core” packages. There are two reasons for
@@ -90,7 +90,7 @@ use to remind myself of what packages need adjusting.
 
 ### Build System Prerequisites
 
-The following perl-specific RPM macros are expected to be defined on the system
+The following Perl-specific RPM macros are expected to be defined on the system
 building the spec file:
 
 * `%perl5_vendorlib` (base `@INC` directory for RPM-packaged non-core `noarch`
@@ -138,7 +138,7 @@ integer triplet version of Perl but the last part of the triplet is just the
 should not require all add-on modules be rebuilt.
 
 The second issue I have with the ‘Red Hat Way’ is it does not ensure the RPM
-package is placing the modules within the proper perl `@INC` directory, which
+package is placing the modules within the proper Perl `@INC` directory, which
 can and does vary between GNU/Linux distributions.
 
 YJL defines the following macros, in the same place where `%perl5_vendorlib`
@@ -223,7 +223,7 @@ like it is an older version to RPM still exists.
 If a CPAN update looks older to RPM because of how Perl sees versions, there
 are two solutions I am aware of:
 
-1. Pad the perl version with trailing 0s so that it becomes a larger integer
+1. Pad the Perl version with trailing 0s so that it becomes a larger integer
    than the previous release. This solution avoids the need for an `Epoch:`
    metadata field, but it means the `Version:` metadata field no longer
    matches the tarball.
@@ -235,11 +235,11 @@ Fortunately, at the start of this project, most CPAN authors are aware of the
 issue and pad the version themselves, so hopefully a remedy by the RPM packager
 will rarely be needed.
 
-When a perl version starts with a `v`, that actually tells the Perl version
+When a Perl version starts with a `v`, that actually tells the Perl version
 parser that the version is integer fields delimited by a `.` which is exactly
 how RPM already views versions, so removing the `v` from the `Version:` field
 is both safe and avoids RPM from interpreting the `v` as part of the version
-which would invoke string comparisons instead of ingeger comparisons.
+which would invoke string comparisons instead of integer comparisons.
 
 #### Release Metadata
 
@@ -366,7 +366,7 @@ BuildRequires, Requires, and Provides
 Many GNU/Linux distributions have scriptlets that attempt to auto-detect what
 Perl modules a package provides and depends upon. My experience with those
 scriptlets is they *mostly* work but even though it is incredibly time
-consuming, it is better to manually define perl module dependencies. This does
+consuming, it is better to manually define Perl module dependencies. This does
 result in some mistakes but I honestly think it is better.
 
 The modules required to run the installer while creating the package always
@@ -398,7 +398,7 @@ defined.
 
 ### Minimum Perl Version
 
-When the perl module has a minimum Perl version that is needed, the spec file
+When the Perl module has a minimum Perl version that is needed, the spec file
 *must* have
 
     BuildRequires: perl(:VERSION) >= 5.m.n
@@ -406,12 +406,12 @@ When the perl module has a minimum Perl version that is needed, the spec file
 Where `m` is the second integer in the triplet and `n` is the patch level
 integer in the triplet.
 
-Sometimes the minimum perl version is specified as a float, so you may need
+Sometimes the minimum Perl version is specified as a float, so you may need
 to convert it.
 
 When described as a float, pad it with zeros to six decimal places. Then the
 first three decimals after the dot correspond with `m` and the second set of
-three correspon with the `n`. For example:
+three correspond with the `n`. For example:
 
     use 5.00801  = use 5.008010 is the triplet 5.8.10
     use 5.04     = use 5.040000 is the triplet 5.40.0
@@ -496,7 +496,7 @@ that all `Requires` and `Provides` have the same number of decimal places.
 
 A list of what modules need that treatment and how many decimals of padding are
 needed will need to be maintained. At this point in time, it is quite rare. In
-most historic cases, the CPAN developers have resolved it by incrementing the
+most historic cases, the CPAN developers have resolved it by incriminating the
 number *before* the `.` and then being mindful to always use a fixed number of
 decimal places so that the version sorts the same whether evaluated as a float
 or as integer fields.
@@ -508,7 +508,7 @@ RPM but including the `v` in the RPM versioning breaks that.
 
 ### Module Provides
 
-In most cases, a perl module will be of the same version as the CPAN
+In most cases, a Perl module will be of the same version as the CPAN
 distribution it comes from. That can not however be assumed, sometimes they
 differ *even when there is only one module*.
 
@@ -584,7 +584,7 @@ The `%prep` section
 -------------------
 
 The first line of the `%prep` section uses the RPM `%setup` macro unpacks the
-source tarball. Most of the time this is the proper comman to use:
+source tarball. Most of the time this is the proper command to use:
 
     %setup -q -n %{cpanname}-%{version}
 
