@@ -192,8 +192,46 @@ much less likely to change or vanish over time.
 #### Version metada
 
 The `Version:` field *must* match the version number in the source tarball
-*unless* the version number in the source tarball starts with `v` in which case
-the `v` should be omitted.
+*unless* the version number in the source tarball starts with `v` or contains
+an underscore. With CPAN packages that start with a `v`, the `v` should be
+omitted from the RPM package `Version:` metadata. When a package contains an
+an `_` underscore in the version, it is a test release and *probably* should
+not be packaged *however* if it is packaged, the `_` should be omitted. Perl
+itself ignores the underscore in its own version comparison, it is purely
+decorative for humans.
+
+Perl version (except those that start with a `v`) are floating point decimal
+numbers, so for example, `3.2` is seen as newer than `3.15`. However, RPM sees
+these numbers as integer fields delimited by a `.` so `3.15` is seen as newer
+than `3.2`. This can cause a problem.
+
+At this point, *most* Perl developers on CPAN are aware of this issue and will
+pad their version numbers with trailing zeros (e.g. `3.20` in the previous
+example) so that the version sort order works with both Perl and with packaging
+systems like RPM, but the possibility of an update to a package on CPAN looking
+like it is an older version to RPM still exists.
+
+If a CPAN update looks older to RPM because of how Perl sees versions, there
+are two solutions I am aware of:
+
+1. Pad the perl version with trailing 0s so that it becomes a larger integer
+   than the previous release. This solution avoids the need for an `Epoch:`
+   metadata field, but it means the `Version:` metadata field no longer
+   matches the tarball.
+2. Use an `Epoch:` in the RPM spec file. That allows a `Version:` metadata
+   field that matches the source tarball and while I dislike having to do it,
+   I think it is the cleanest way to solve the issue.
+
+Fortunately, at the start of this project, most CPAN authors are aware of the
+issue and pad the version themselves, so hopefully a remedy by the RPM packager
+will rarely be needed.
+
+
+
+
+
+
+
 
 
     
