@@ -748,4 +748,36 @@ Sometimes, specific CPAN distributions will need a modification to the above
 
 ### The `%install` Section for `Makefile.PM`
 
+For `ExtUtils::MakeMaker` and `inc::Module::Install` the `%install` section is
+identical and *generally* should look like this:
+
+    %install
+    make install DESTDIR=%{buildroot}
+
+The `DESTDIR=%{buildroot}` causes the Perl module to be installed in the RPM
+build root where it can then be packaged as an installable RPM archive.
+
+### The `%install` Section for `Build.PM`
+
+Again, for `Module::Build` and `Module::Build::Tiny` the `%install` section is
+*almost* identical. For `Module::Build` it *generally* should look like this:
+
+    %install
+    ./Build pure_install --destdir %{buildroot}
+    find %{buildroot} -type f -name .packlist -delete
+
+The `--destdir %{buildroot}` causes the Perl module to be installed in the RPM
+build root where it can then be packaged as an installable RPM archive.
+
+The `pure_install` option tells `Module::Build` to just do an install, do not
+also update the `perllocal.pod` file.
+
+With `Module::Build::Tiny` the `pure_install` option does not exist, you have
+to use `install` instead of `pure_install`. It does not try to update the
+`perllocal.pod` file.
+
+The `find %{buildroot} -type f -name .packlist -delete` lines removes the
+unneeded (and broken) `.packlist` file that both `Module::Install` and
+`Module::Build::Tiny` both install.
+
 
