@@ -435,3 +435,46 @@ builds of a spec file or source RPM, signature verification should take place
 and the `cpansign` utility is needed for that. End users who really do not
 want to verify the integrity of the source tarball can define that macro in
 their `~/.rpmmacros` file. They also should get their head examined.
+
+### Tests
+
+With a very few exceptions, all modules needed for running tests should have a
+corresponding `BuildRequires:` field defined. The only exceptions are cases
+where the module is broken or seriously deprecated or simply not applicable to
+the operating system.
+
+CPAN modules are developed by many different developers often years apart and
+using vastly different versions of Perl on different operating systems. Running
+as many of the test suites as possible is the best way to find potential issues
+with running the module in your version of Perl in your operating system.
+
+While it does not hurt to add them as `BuildRequires`, I do assume that both
+`perl(Test)` and `perl(Test::Harness)` are available on the build system and do
+not explicitly `BuildRequires` them.
+
+The CPAN distributions *usually* specify what modules are needed to run the
+test suite but often the list is incomplete. Manually checking is the only way
+to be sure all needed modules for the tests have an appropriate `BuildRequires`
+defined.
+
+### Runtime Dependencies
+
+With the noted exception of `perl(strict)` and `perl(warnings)` I believe it is
+a ‘Best Practice’ to add all runtime dependencies as `BuildRequires` as well as
+adding them as `Requires` even if they technically are not needed to install
+and test the module.
+
+For runtime dependencies, I do include `perl(strict)` and `perl(warnings)` when
+they are runtime dependencies.
+
+The CPAN distributions *usually* specify what non-Core runtime dependencies are
+needed but they quite frequently make assumptions that modules distributed as
+part of “Perl Core” are present. Sometimes they forget to specify a module. The
+best thing to do, despite it being very time consuming, is to manually check
+each module installed by the CPAN distribution for its dependencies.
+
+Sometimes a dependency is a fall-back dependency that is only needed if another
+dependency is not met. If that other dependency already has a `Requires` in the
+RPM spec file, there is not a need to also `Require` the fall-back.
+
+### Dependency Versions
