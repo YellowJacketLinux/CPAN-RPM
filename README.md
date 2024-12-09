@@ -499,3 +499,44 @@ A small number of Perl modules use a `v` at the beginning of their version. In
 those cases, the `v` should not be included in the `BuildRequires` or in the
 `Requires`. Those modules have their version sorted the same way by Perl as by
 RPM but including the `v` in the RPM versioning breaks that.
+
+### Module Provides
+
+In most cases, a perl module will be of the same version as the CPAN
+distribution it comes from. That can not however be assumed, sometimes they
+differ *even when there is only one module*.
+
+For each module that a CPAN distribution provides, you have to look at the
+module itself for the defined version to use in the RPM spec file in the
+associated `Provides:` field.
+
+When that version starts with a `v`, do not use the `v` in the module version
+that the RPM spec file specifies with a `Provides:` field. When that version
+contains a `_`, do not use the `_` in the module version that the RPM spec file
+specifies with a `Provides:` field.
+
+In some cases, a module will not specify a version. Sometimes that is the case
+with a module that should not be called by modules or scripts outside the
+distribution but sometimes that is the case with modules that can be called by
+modules or scripts outside the distribution.
+
+When a module without a version is installed by a distribution, I usually do
+have a `Provides:` field for it in the spec file, but I do not assign a version
+to it.
+
+Generally the assigned version in the `Provides:` field should match what is
+specified in the source file containing the module, but in rare cases where the
+version is a float that causes RPM to misidentify the module as older than a
+previous release, it may be necessary to pad the end of the assigned version in
+the RPM spec file with one or more zeros at the end.
+
+Sometimes a single source file provides more than one module (more than one
+`package` defined in the file). In such cases, I only create a single
+`Provides:` that matches what is expected for the source file name.
+
+
+The `%prep` section
+-------------------
+
+foo
+
