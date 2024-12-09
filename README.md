@@ -478,3 +478,24 @@ dependency is not met. If that other dependency already has a `Requires` in the
 RPM spec file, there is not a need to also `Require` the fall-back.
 
 ### Dependency Versions
+
+When a dependency requires a specific version (or newer) of a Perl module, the
+version is almost always a float. RPM however will interpret the version as
+two integer fields delimited by a `.`. Most CPAN developers are aware of this
+but it can sometimes be an issue.
+
+When it is an issue, the solution is to pad the version in the `Provides` with
+zeros and for any spec file that requires it, pad them with zeros as needed, so
+that all `Requires` and `Provides` have the same number of decimal places.
+
+A list of what modules need that treatment and how many decimals of padding are
+needed will need to be maintained. At this point in time, it is quite rare. In
+most historic cases, the CPAN developers have resolved it by incrementing the
+number *before* the `.` and then being mindful to always use a fixed number of
+decimal places so that the version sorts the same whether evaluated as a float
+or as integer fields.
+
+A small number of Perl modules use a `v` at the beginning of their version. In
+those cases, the `v` should not be included in the `BuildRequires` or in the
+`Requires`. Those modules have their version sorted the same way by Perl as by
+RPM but including the `v` in the RPM versioning breaks that.
