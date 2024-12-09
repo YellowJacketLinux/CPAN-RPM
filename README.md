@@ -664,3 +664,53 @@ build system used when reading the spec file. For example:
     #
 
 All other `BuildRequires` then follow *preferably* in alphabetical order.
+
+### The `%build` Section for `Makefile.PM`
+
+For `ExtUtils::MakeMaker` and `inc::Module::Install` the `%build` section is
+identical and *generally* should look like this:
+
+    PERL_MM_USE_DEFAULT=1   \
+    BUILDING_AS_PACKAGE=1   \
+    perl Makefile.PL        \
+         INSTALLDIRS=vendor \
+         NO_PACKLIST=1      \
+         NO_PERLLOCAL=1     \
+         OPTIMIZE="$RPM_OPT_FLAGS"
+    make %{?_smp_mflags}
+
+The `PERL_MM_USE_DEFAULT=1` environmental variable tells `Makefile.PM` that you
+do not want an interactive build, and to use defaults where it might ask you
+questions.
+
+The `BUILDING_AS_PACKAGE=1` environmental variable is meaningless to *most* CPAN
+distributions but for a few, it tells the the script that was is being built is
+a package and not to do stuff inappropriate for a package. As far as I can tell,
+of all the CPAN packages I have built, only `ExtUtils::MakeMaker` itself has
+cared about that setting. It *may* not be needed for any other package.
+
+The `INSTALLDIRS=vendor` arguement tells `Makefile.PM` that the perl modules
+should be installed in the vendor `@INC` directory, which is specifically for
+Perl modules installed from an installation package.
+
+The `NO_PACKLIST=1` argument tells `Makefile.PL` not create a `.packlist` file.
+Those files are not meaningful to RPM managed installs, and are broken when a
+`DESTDIR` is used, so they should not be generated.
+
+The `NO_PERLLOCAL=1` argument tells `Makefile.PL` not to update the
+`perllocal.pod` file, which it should not do when building a package.
+
+The `OPTIMIZE="$RPM_OPT_FLAGS"` arguement may actually not be needed with
+modern versions of Perl/MakeMaker, as it seems to get the right flags to use
+from how Perl itself was configured, but it still does not hurt to have it.
+Generally, `$RPM_OPT_FLAGS` tend to be a little more aggressive than default
+flags with respect to security (e.g. `-D_FORTIFY_SOURCE=2` and
+`-fstack-protector-strong`) and are good to use.
+
+Sometimes, specific CPAN distributions will need a modification to the above
+`%build` section. Typically additional options can be discovered by reading the
+`INSTALL` file (if present), the `README` file, or the `Makefile.PL` file.
+
+### The `%build` Section for `Makefile.PM`
+
+
