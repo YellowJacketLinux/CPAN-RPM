@@ -632,7 +632,7 @@ frequently I encounter them:
 * `perl(ExtUtils::MakeMaker)` *(part of “Perl Core”)*
 * `perl(Module::Build)` *(formerly part of “Perl Core”)*
 * `perl(Module::Build::Tiny)`
-* `perl(inc::Module::Install) *(A wrapper for `ExtUtils::MakeMaker`)*
+* `perl(inc::Module::Install)` *(A wrapper for `ExtUtils::MakeMaker`)*
 
 When a CPAN distribution has a `Makefile.PL` script, it *probably* uses either
 `ExtUtils::MakeMaker` or `inc::Module::Install` as the build system. If there
