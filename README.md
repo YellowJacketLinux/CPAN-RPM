@@ -538,5 +538,46 @@ Sometimes a single source file provides more than one module (more than one
 The `%prep` section
 -------------------
 
-foo
+The first line of the `%prep` section uses the RPM `%setup` macro unpacks the
+source tarball. Most of the time this is the proper comman to use:
 
+    %setup -q -n %{cpanname}-%{version}
+
+In cases where the CPAN distribution version starts with a `v` use this instead:
+
+    %setup -q -n %{cpanname}-v%{version}
+
+If the CPAN distribution contains a `SIGNATURE` file, the spec file __MUST__
+contain this conditional to verify the integrity of the distribution:
+
+    %if 0%{?!cpansigverify_skip:1} == 1
+    cpansign verify
+    %endif
+
+That way the `SIGNATURE` file is used to verify the integrity of the source
+*unless* the `%{cpansigverify_skip}` macro has been defined.
+
+If there are any patches to apply (which should be quite rare), patches should
+only be applied *after* signature verification or the signature validation will
+obviously fail.
+
+If the CPAN distribution does not include the text of the license it specifies,
+copy the source containing the license file into the unpacked source.
+
+The `%prep` section of a CPAN distribution that includes a `SIGNATURE` file and
+specifies the license as either GPL 1.0 or Artistic but does not include the
+texts of those licenses would thus start like thus:
+
+    %prep
+    %setup -q -n %{cpanname}-%{version}
+    %if 0%{?!cpansigverify_skip:1} == 1
+    cpansign verify
+    %endif
+    cp %{SOURCE90} .
+    cp %{SOURCE91} .
+
+
+CPAN Distribution Build
+-----------------------
+
+foo
