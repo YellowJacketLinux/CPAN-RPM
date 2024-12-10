@@ -776,8 +776,56 @@ With `Module::Build::Tiny` the `pure_install` option does not exist, you have
 to use `install` instead of `pure_install`. It does not try to update the
 `perllocal.pod` file.
 
-The `find %{buildroot} -type f -name .packlist -delete` lines removes the
+The `find %{buildroot} -type f -name .packlist -delete` line removes the
 unneeded (and broken) `.packlist` file that both `Module::Install` and
 `Module::Build::Tiny` both install.
 
+### The `%check` Section for `Makefile.PM`
 
+For `ExtUtils::MakeMaker` and `inc::Module::Install` the `%check` section is
+identical and *generally* should look like this:
+
+    %check
+    make test > %{name}-make.test.log 2>&1
+
+This redirect of the `make test` output to `%{name}-make.test.log` allows the
+test output to be packaged in the `%files` section using the `%doc` macros so
+that users who have installed the package can inspect the test log for
+themselves.
+
+Sometimes, setting an environmental variable when running the test suite will
+cause more extensive testing to take place, such as in the `Type::Tiny` CPAN
+distribution where setting `EXTENDED_TESTING=1` triggers additional testing.
+
+### The `%check` Section for `Build.PM`
+
+For `Module::Build` and `Module::Build::Tiny` the `%check` section is
+identical and *generally* should look like this:
+
+    %check
+    ./Build test > %{name}-make.test.log 2>&1
+
+This redirect of the `make test` output to `%{name}-make.test.log` allows the
+test output to be packaged in the `%files` section using the `%doc` macros so
+that users who have installed the package can inspect the test log for
+themselves.
+
+Sometimes, setting an environmental variable when running the test suite will
+cause more extensive testing to take place.
+
+### DynaLoad Bootstrap Files and `Build.PM`
+
+When building XS modules, both `Module::Build` and `Module::Build::Tiny` will
+create a DynaLoad Bootstrap file that has an identical path as the binary
+shared object file, and share the same filename except it uses a `.bs`
+extension instead of a `.so` extension.
+
+This bootstrap file is typically empty and should not be needed on GNU/Linux
+systems. In the `%files` section of the spec file, it should be excluded from
+packaging using the `%exclude` macro.
+
+
+The `%files` Section
+--------------------
+
+Foo
