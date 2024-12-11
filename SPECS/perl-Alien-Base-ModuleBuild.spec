@@ -2,11 +2,11 @@
 
 Name:     perl-%{cpanname}
 Version:  1.17
-Release:  %{?repo}0.rc1%{?dist}
+Release:  %{?repo}0.rc2%{?dist}
 Summary:  A Module::Build subclass for building Alien:: modules and libraries
 BuildArch: noarch
 
-Group:    System Environment/Libraries
+Group:    Perl/Development
 License:  GPL-1.0-or-later or Artistic-1.0-Perl
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/%{cpanname}-%{version}.tar.gz
@@ -14,6 +14,7 @@ Source0:  https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/%{cpanname}-%{versi
 BuildRequires: perl(:VERSION) >= 5.8.1
 BuildRequires: perl-devel
 BuildRequires: perl(Module::Build) >= 0.4004
+#
 BuildRequires: perl(Alien::Base)
 BuildRequires: perl(Alien::Base::PkgConfig) >= 1.20
 BuildRequires: perl(Archive::Extract)
@@ -46,6 +47,8 @@ BuildRequires: perl(Text::ParseWords) >= 3.26
 BuildRequires: perl(URI)
 BuildRequires: perl(URI::file)
 BuildRequires: perl(parent)
+BuildRequires: perl(strict)
+BuildRequires: perl(warnings)
 %if 0%{?perl5_API:1} == 1
 Requires: %{perl5_API}
 %else
@@ -97,12 +100,12 @@ Provides: perl(Alien::Base::ModuleBuild::Utils) = %{version}
 
 
 %description
-This is a subclass of 'Module::Build', that with 'Alien::Base'
+This is a subclass of `Module::Build`, that with `Alien::Base`
 allows for easy creation of Alien distributions.
 
 NOTE: Please consider for new development of Aliens that you use
-'Alien::Build' and alienfile instead. Like this module they work
-with 'Alien::Base'. Unlike this module they are more easily
+`Alien::Build` and `alienfile` instead. Like this module they
+work with `Alien::Base`. Unlike this module they are more easily
 customized and handle a number of corner cases better.
 
 
@@ -144,5 +147,8 @@ find %{buildroot} -type f -name .packlist -delete
 
 
 %changelog
+* Wed Dec 11 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.17-0.rc2
+- Some spec file cleanup to meet YJL standards.
+
 * Thu Dec 05 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.17-0.rc1
 - Initial spec file for YJL 6.6 (LFS 12.2 based)
