@@ -13,6 +13,8 @@ multi-byte characters (curly apostrophe, single and double quotes) in GNU/Linux
 consoles without a proper UTF-8 font available, as is sometimes the case when
 booting without a GUI where bitmap fonts are used.
 
+A Table of Contents and some structural cleanup is needed.
+
 ### Copyright and License
 
 This README file is (c)2024 Michael A. Peters and licensed under the ‘GNU Free
