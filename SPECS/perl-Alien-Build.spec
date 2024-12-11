@@ -6,14 +6,15 @@
 # Avoid circular test dependencies until bootstrapped
 #
 #%%global alienbuild_bootstrap 1
+#%%global ffiplatypus_bootstrap 1
 
 Name:     perl-%{cpanname}
 Version:  2.84
-Release:  %{?repo}0.rc2%{?dist}
+Release:  %{?repo}0.rc3%{?dist}
 Summary:  Build external dependencies for use in CPAN
 BuildArch: noarch
 
-Group:    System Environment/Libraries
+Group:    Perl/Installer-Tools
 License:  GPL-1.0-or-later or Artistic-1.0-Perl
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/%{cpanname}-%{version}.tar.gz
@@ -21,6 +22,7 @@ Source0:  https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/%{cpanname}-%{versi
 BuildRequires: perl(:VERSION) >= 5.8.4
 BuildRequires: perl-devel
 BuildRequires: perl(ExtUtils::MakeMaker) >= 6.64
+#
 BuildRequires: perl(Capture::Tiny) >= 0.17
 BuildRequires: perl(Carp)
 BuildRequires: perl(Config)
@@ -32,7 +34,6 @@ BuildRequires: perl(Exporter)
 BuildRequires: perl(ExtUtils::CBuilder)
 BuildRequires: perl(ExtUtils::ParseXS) >= 3.30
 BuildRequires: perl(FFI::CheckLib) >= 0.11
-#BuildRequires: perl(FFI::Platypus)
 BuildRequires: perl(File::Basename)
 BuildRequires: perl(File::Copy)
 BuildRequires: perl(File::Find)
@@ -57,12 +58,21 @@ BuildRequires: perl(YAML)
 BuildRequires: perl(constant)
 BuildRequires: perl(overload)
 BuildRequires: perl(parent)
+BuildRequires: perl(strict)
+BuildRequires: perl(warnings)
+# Bootstrap Conditional BuildRequires
 %if 0%{?!alienbuild_bootstrap:1} == 1
 BuildRequires: perl(Alien::Base::ModuleBuild)
 BuildRequires: perl(Alien::cmake3)
-# Below is broken
+# Below is broken w/ YJL libpkgconfig
 #BuildRequires: perl(PkgConfig::LibPkgConf)
 %endif
+# Below *probably* should be integrated into above*
+%if 0%{?!ffiplatypus_bootstrap:1} == 1
+BuildRequires: perl(FFI::Platypus)
+%endif
+#
+# Requires
 #
 %if 0%{?perl5_API:1} == 1
 Requires: %{perl5_API}
@@ -97,12 +107,8 @@ Requires: perl(List::Util) >= 1.33
 Requires: perl(Mojo::DOM58) >= 1.00
 Requires: perl(Net::SSLeay)
 Requires: perl(Path::Tiny) >= 0.077
-# Technically I'm not sure PkgConfig is needed on GNU/Linux
-#  systems with the actual pkg-config command available but
-#  requiring it does not hurt and avoids the need to
-#  'Require %%{_bindir}/pkg-config' although that is what is
-#  used if found
 Requires: perl(PkgConfig) >= 0.14026
+# Below broken for YJL libpkgconfig, so suggest only
 Suggests: perl(PkgConfig::LibPkgConf) >= 0.04
 Requires: perl(Storable)
 Requires: perl(Term::ANSIColor)
@@ -189,10 +195,10 @@ Provides: perl(alienfile) = %{version}
 
 
 %description
-This module provides tools for building external (non-CPAN)
-dependencies for CPAN. It is mainly designed to be used at install
-time of a CPAN client, and work closely with 'Alien::Base' which
-is used at runtime.
+This distribution provides tools for building external (non-CPAN)
+dependencies for CPAN distributions. `Alien::Build` is mainly
+designed to be used at install time by a CPAN client, and work
+closely with `Alien::Base` which is used at runtime.
 
 
 %prep
@@ -226,7 +232,6 @@ make test > %{name}-make.test.log 2>&1
 %dir %{perl5_vendorlib}/Alien/Build/Interpolate
 %dir %{perl5_vendorlib}/Alien/Build/Log
 %dir %{perl5_vendorlib}/Alien/Build/Manual
-#%%dir %%{perl5_vendorlib}/Alien/Build/Manual/image
 %dir %{perl5_vendorlib}/Alien/Build/Plugin
 %dir %{perl5_vendorlib}/Alien/Build/Plugin/Build
 %dir %{perl5_vendorlib}/Alien/Build/Plugin/Core
@@ -252,7 +257,6 @@ make test > %{name}-make.test.log 2>&1
 %{perl5_vendorlib}/Alien/Build/Interpolate/*.pm
 %{perl5_vendorlib}/Alien/Build/Log/*.pm
 %{perl5_vendorlib}/Alien/Build/Manual/*.pod
-#%%{perl5_vendorlib}/Alien/Build/Manual/image/PluginAuthor-flowchart.*
 %{perl5_vendorlib}/Alien/Build/Plugin/*.pod
 %{perl5_vendorlib}/Alien/Build/Plugin/Build/*.pm
 %{perl5_vendorlib}/Alien/Build/Plugin/Core/*.pm
@@ -272,10 +276,13 @@ make test > %{name}-make.test.log 2>&1
 %attr(0644,root,root) %{_mandir}/man3/*.3*
 %license LICENSE
 %doc %{name}-make.test.log
-%doc LICENSE Changes* README example
+%doc LICENSE Changes* README SUPPORT example
 
 
 
 %changelog
+* Wed Dec 11 2024 Michael A. Peters <anymouseprophet@gmail.com> - 2.84-0.rc3
+- Some spec file cleanup for YJL standards
+
 * Fri Dec 06 2024 Michael A. Peters <anymouseprophet@gmail.com> - 2.84-0.rc2
 - Initial spec file for YJL 6.6 (LFS 12.2 based)
