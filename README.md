@@ -689,7 +689,7 @@ a package and not to do stuff inappropriate for a package. As far as I can tell,
 of all the CPAN packages I have built, only `ExtUtils::MakeMaker` itself has
 cared about that setting. It *may* not be needed for any other package.
 
-The `INSTALLDIRS=vendor` arguement tells `Makefile.PM` that the perl modules
+The `INSTALLDIRS=vendor` argument tells `Makefile.PM` that the Perl modules
 should be installed in the vendor `@INC` directory, which is specifically for
 Perl modules installed from an installation package.
 
@@ -700,7 +700,7 @@ Those files are not meaningful to RPM managed installs, and are broken when a
 The `NO_PERLLOCAL=1` argument tells `Makefile.PL` not to update the
 `perllocal.pod` file, which it should not do when building a package.
 
-The `OPTIMIZE="$RPM_OPT_FLAGS"` arguement may actually not be needed with
+The `OPTIMIZE="$RPM_OPT_FLAGS"` argument may actually not be needed with
 modern versions of Perl/MakeMaker, as it seems to get the right flags to use
 from how Perl itself was configured, but it still does not hurt to have it.
 Generally, `$RPM_OPT_FLAGS` tend to be a little more aggressive than default
@@ -736,7 +736,7 @@ a result of locally building Perl modules outside of RPM.
 That line is not needed for `Module::Build::Tiny` as it already does not make
 use of such configuration files.
 
-The `--installdirs vendor` option tells `Build.PL` that the perl modules should
+The `--installdirs vendor` option tells `Build.PL` that the Perl modules should
 be installed in the vendor `@INC` directory, which is specifically for Perl
 modules installed from an installation package.
 
@@ -817,7 +817,7 @@ cause more extensive testing to take place.
 
 When building XS modules, both `Module::Build` and `Module::Build::Tiny` will
 create a DynaLoad Bootstrap file that has an identical path as the binary
-shared object file, and share the same filename except it uses a `.bs`
+shared object file, and share the same file name except it uses a `.bs`
 extension instead of a `.so` extension.
 
 This bootstrap file is typically empty and should not be needed on GNU/Linux
@@ -835,4 +835,94 @@ the *proper* solution is for that non-standard location to be configured in a
 The `%files` Section
 --------------------
 
-Foo
+For the main package (the Perl modules), the default file attributes are set to
+to read only for all users. Many moons ago when I wanted to test an update by
+installing locally from source in the ‘site’ `@INC` directory, I accidentally
+used the ‘vendor’ `@INC` directory which over-wrote the RPM managed version of
+the CPAN distribution. I do not know if denying write permission would actually
+protect systems from that kind of mistake, but it might.
+
+The `%files` section thus *always* begins like this:
+
+    %files
+    %defattr(0444,root,root,-)
+
+Any file listed will then have `0444` permissions *unless* another attribute is
+specifically set for the file.
+
+XS modules need the execution bit set. It is possible they actually do not, but
+at least historically with RPM, debug symbols would not be properly stripped
+from binary files that did not have the execution bit set. So for any XS
+modules, `%attr(0555,root,root)` is specified.
+
+Manual pages could be installed with the default `0444` permissions but it is
+customary for manual pages to have `0644` permissions so for manual pages, I do
+set `%attr(0644,root,root)` to conform with traditional RPM packages of manual
+pages.
+
+The output of the tests during the build process is packaged with the following
+line in the `%files` section:
+
+    %doc %{name}-make.test.log
+
+That allows the output of the test suite to be viewed at any point in the
+future.
+
+
+Sub-Packages
+------------
+
+At this time I am not allowing the Perl module part of a CPAN distribution to be
+broken up into multiple sub-packages, although perhaps for some packages such as
+`Alien` an argument could be made for breaking it up.
+
+Executable scripts however *must* be put into a separate sub-package.
+
+The main package *usually* should then use an RPM `Suggest:` field to suggest
+that the executable script sub-package be installed, but sometimes it is better
+to use `Requires:` and sometimes it is okay to do neither.
+
+An executable script sub-package *usually* should either be named using the name
+of the script it installs, or use the CPAN distribution name *without* the
+`perl-` prefix.
+
+An executable script sub-package *must* require the same same version and
+release main package, and also should require any perl modules it uses and if
+specified, the minimum version of Perl.
+
+The executable scripts themselves should have `%attr(0755,root,root)` set and
+should be installed in `%{_bindir}`.
+
+
+End-Notes
+---------
+
+Not being satisfied with other Perl RPM packaging guidelines I have come across,
+specifically their use of automatic filtering of `Provides:` and `Requires:`
+and their use of `perl(:MODULE_COMPAT_<perl_version>)` which is patch-level
+specific and does not bind the RPM to `@INC` structure, these packaging
+guidelines are a __rough draft__ of my own set of Perl packaging guidelines for
+CPAN distributions that I wish to enforce for Yellow-Jacket GNU/Linux.
+
+There may be changes made in the future, but I figured it is better to at least
+have *something* in the present I can use to validate my RPM spec files against.
+
+The plan is also test whether or not these RPM spec files properly build in
+Fedora 41 without modification.
+
+Generally users of Fedora or any other GNU/Linux distribution should use the
+packages their distribution provides *however* sometimes those packages are out
+of date and sometimes they may not exist and sometimes there are other reasons
+why a user might not want their OS vendor-provided packages. In those cases, the
+users of those distributions *should* be able to build these spec files with
+little or no modification needed.
+
+### Importing Spec Files
+
+Presently I have over 300 CPAN distribution spec files written, and more to
+write. The intent is to import them ten at a time into the `incoming` branch of
+this git repository where I will then make sure they meet the specification I
+have provided here, and when they do, pull request them into the main git.
+
+This will take a long time and I suspect will not be finished until some time
+in February.
