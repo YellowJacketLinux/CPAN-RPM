@@ -822,7 +822,14 @@ extension instead of a `.so` extension.
 
 This bootstrap file is typically empty and should not be needed on GNU/Linux
 systems. In the `%files` section of the spec file, it should be excluded from
-packaging using the `%exclude` macro.
+packaging using the `%exclude` macro. For example:
+
+    %attr(0555,root,root) %{perl5_vendorarch}/auto/Class/Plain/Plain.so
+    %exclude %{perl5_vendorarch}/auto/Class/Plain/Plain.bs
+
+If a Perl XS module needs to link to shared library in a non-standard location,
+the *proper* solution is for that non-standard location to be configured in a
+`/etc/ld.so.conf.d/` file rather than using a DynaLoad bootstrap file.
 
 
 The `%files` Section
