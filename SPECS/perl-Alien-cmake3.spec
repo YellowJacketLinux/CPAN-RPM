@@ -2,19 +2,21 @@
 
 Name:     perl-%{cpanname}
 Version:  0.08
-Release:  %{?repo}0.rc1%{?dist}
-Summary:  Find or download or build cmake 3 or better
+Release:  %{?repo}0.rc2%{?dist}
+Summary:  Alien package for CMake 3 or better
 BuildArch: noarch
 
-Group:    System Environment/Libraries
+Group:    Perl/Development
 License:  GPL-1.0-or-later or Artistic-1.0-Perl
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/%{cpanname}-%{version}.tar.gz
 
 BuildRequires: cmake >= 3.0.0
+#
 BuildRequires: perl(:VERSION) >= 5.8.1
 BuildRequires: perl-devel
 BuildRequires: perl(ExtUtils::MakeMaker) >= 6.52
+#
 BuildRequires: perl(Alien::Base) >= 0.92
 BuildRequires: perl(Alien::Build) >= 1.19
 BuildRequires: perl(Alien::Build::MM) >= 0.32
@@ -24,6 +26,8 @@ BuildRequires: perl(Path::Tiny)
 BuildRequires: perl(Test::Alien) >= 0.92
 BuildRequires: perl(Test2::V0) >= 0.000121
 BuildRequires: perl(base)
+BuildRequires: perl(strict)
+BuildRequires: perl(warnings)
 %if 0%{?perl5_API:1} == 1
 Requires: %{perl5_API}
 %else
@@ -34,14 +38,16 @@ Requires: perl(Alien::Base) >= 0.92
 Requires: perl(base)
 Requires: perl(strict)
 Requires: perl(warnings)
+# Make sure installed Alien::cmake3 does not need to download CMake
 Requires: cmake >= 3.0.0
+#
 Provides: perl(Alien::cmake3) = %{version}
 
 
 %description
-This Alien distribution provides an external dependency on the
-build tool 'cmake' version 3.0.0 or better. 'cmake' is a
-popular alternative to autoconf.
+This Alien distribution ensures that a CPAN external dependency
+on the common build tool `cmake` version 3.0.0 or better is met.
+`cmake` is a popular alternative to `autoconf`.
 
 
 %prep
@@ -72,6 +78,8 @@ make test > %{name}-make.test.log 2>&1
 %dir %{perl5_vendorlib}/Alien
 %dir %{perl5_vendorlib}/auto/Alien
 %dir %{perl5_vendorlib}/auto/Alien/cmake3
+%dir %{perl5_vendorlib}/auto/share
+%dir %{perl5_vendorlib}/auto/share/dist
 %dir %{perl5_vendorlib}/auto/share/dist/Alien-cmake3
 %dir %{perl5_vendorlib}/auto/share/dist/Alien-cmake3/_alien
 %{perl5_vendorlib}/Alien/cmake3.pm
@@ -86,5 +94,8 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
+* Wed Dec 11 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.08-0.rc2
+- Spec file cleanup
+
 * Thu Dec 05 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.08-0.rc1
 - Initial spec file for YJL 6.6 (LFS 12.2 based)
