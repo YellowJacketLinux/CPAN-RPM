@@ -2,7 +2,7 @@
 
 Name:     perl-%{cpanname}
 Version:  1.68
-Release:  %{?repo}0.rc1%{?dist}
+Release:  %{?repo}0.rc2%{?dist}
 Summary:  Provide an interface to ZIP archive files
 BuildArch: noarch
 
@@ -10,12 +10,16 @@ Group:    System Environment/Libraries
 License:  GPL-1.0-or-later or Artistic-1.0-Perl
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/P/PH/PHRED/%{cpanname}-%{version}.tar.gz
-Source90: PERL-Artistic
-Source91: PERL-Copying
+Source90: Artistic-1.0-Perl.txt
+Source91: GPL-1.0.txt
 
+
+BuildRequires: perl(:VERSION) >= 5.6.0
 BuildRequires: perl-devel
 BuildRequires: perl(ExtUtils::MakeMaker)
+#
 BuildRequires: perl(Carp)
+BuildRequires: perl(Config)
 BuildRequires: perl(Cwd)
 BuildRequires: perl(Compress::Raw::Zlib) >= 2.017
 BuildRequires: perl(Encode)
@@ -37,6 +41,9 @@ BuildRequires: perl(integer)
 BuildRequires: perl(vars)
 %if 0%{?perl5_API:1} == 1
 Requires: %{perl5_API}
+%else
+Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+Requires: %{perl5_vendorlib}
 %endif
 Requires: perl(Carp)
 Requires: perl(Cwd)
@@ -59,6 +66,8 @@ Requires: perl(integer)
 Requires: perl(strict)
 Requires: perl(vars)
 #
+Suggests: crc32
+#
 Provides: perl(Archive::Zip) = %{version}
 Provides: perl(Archive::Zip::Archive) = %{version}
 Provides: perl(Archive::Zip::BufferedFileHandle) = %{version}
@@ -73,13 +82,15 @@ Provides: perl(Archive::Zip::Tree) = %{version}
 Provides: perl(Archive::Zip::ZipFileMember) = %{version}
 
 %description
-The 'Archive::Zip' module allows a Perl program to create,
+The `Archive::Zip` module allows a Perl program to create,
 manipulate, read, and write Zip archive files.
 
 %package -n crc32
 Group: System Environment/Utilities
 Summary: Computes and prints the CRC-32 values of the given files
-Requires: perl(Archive::Zip) >= %{version}
+Requires: perl(:VERSION) >= 5.6.0
+Requires: %{name} = %{version}-%{release}
+Requires: perl(Archive::Zip) = %{version}
 Requires: perl(FileHandle)
 Requires: perl(lib)
 Requires: perl(strict)
@@ -94,6 +105,21 @@ stdout the CRC-32 values of the given files.
 %setup -q -n %{cpanname}-%{version}
 cp %{SOURCE90} .
 cp %{SOURCE91} .
+# Extract license info from README.md
+cat << "EOF" > Perl-License-Extracted.txt
+The following was extracted from
+
+  %{_datadir}/doc/perl-%{cpanname}-%{version}/README.md
+
+
+EOF
+
+START=`grep -n "^# COPYRIGHT" README.md |cut -d":" -f1`
+END=`wc -l README.md |cut -d " " -f1`
+DIFF="$((${END}-${START}))"
+TAIL="$((${DIFF}+1))"
+
+tail -${TAIL} README.md >> Perl-License-Extracted.txt
 
 
 %build
@@ -123,16 +149,19 @@ make test > %{name}-make.test.log 2>&1
 %{perl5_vendorlib}/Archive/Zip/*.pm
 %{perl5_vendorlib}/Archive/Zip/FAQ.pod
 %attr(0644,root,root) %{_mandir}/man3/*.3*
-%license README.md PERL-Artistic PERL-Copying
+%license Perl-License-Extracted.txt Artistic-1.0-Perl.txt GPL-1.0.txt
 %doc %{name}-make.test.log
-%doc README.md PERL-Artistic PERL-Copying Changes examples
+%doc README.md Perl-License-Extracted.txt Changes examples
 
 %files -n crc32
 %defattr(-,root,root,-)
 %attr(0755,root,root) %{_bindir}/crc32
-%license README.md PERL-Artistic PERL-Copying
-%doc README.md PERL-Artistic PERL-Copying
+%license Perl-License-Extracted.txt Artistic-1.0-Perl.txt GPL-1.0.txt
+%doc Perl-License-Extracted.txt
 
 %changelog
+* Wed Dec 11 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.68-0.rc2
+- Clear up license files, general spec file cleanup
+
 * Thu Nov 28 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.68-0.rc1
 - Initial spec file for YJL 6.6 (LFS 12.2 based)
