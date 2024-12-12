@@ -80,6 +80,8 @@ make test > %{name}-make.test.log 2>&1
 %dir %{perl5_vendorlib}/Alien/GMP/Install
 %dir %{perl5_vendorlib}/auto/Alien
 %dir %{perl5_vendorlib}/auto/Alien/GMP
+%dir %{perl5_vendorlib}/auto/share
+%dir %{perl5_vendorlib}/auto/share/dist
 %dir %{perl5_vendorlib}/auto/share/dist/Alien-GMP
 %dir %{perl5_vendorlib}/auto/share/dist/Alien-GMP/_alien
 %{perl5_vendorlib}/Alien/GMP.pm
