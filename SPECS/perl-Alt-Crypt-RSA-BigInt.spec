@@ -2,12 +2,12 @@
 
 Name:     perl-%{cpanname}
 Version:  0.06
-Release:  %{?repo}0.rc1%{?dist}
+Release:  %{?repo}0.rc2%{?dist}
 Summary:  RSA public-key cryptosystem, using Math::BigInt
 BuildArch: noarch
 Conflicts: perl-Crypt-RSA
 
-Group:    System Environment/Libraries
+Group:    Perl/Libraries
 License:  GPL-1.0-or-later or Artistic-1.0-Perl
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/D/DA/DANAJ/%{cpanname}-%{version}.tar.gz
@@ -17,6 +17,7 @@ BuildRequires: pkgconfig(gmp)
 BuildRequires: perl(:VERSION) >= 5.8.0
 BuildRequires: perl-devel
 BuildRequires: perl(ExtUtils::MakeMaker)
+#
 BuildRequires: perl(Benchmark)
 BuildRequires: perl(Carp)
 BuildRequires: perl(Class::Loader)
@@ -40,7 +41,9 @@ BuildRequires: perl(Test::More) >= 0.45
 BuildRequires: perl(Tie::EncryptedHash)
 BuildRequires: perl(base)
 BuildRequires: perl(constant)
+BuildRequires: perl(strict)
 BuildRequires: perl(vars)
+BuildRequires: perl(warnings)
 %if 0%{?perl5_API:1} == 1
 Requires: %{perl5_API}
 %else
@@ -90,8 +93,8 @@ Provides: perl(Crypt::RSA::SS::PSS) = 1.99
 
 
 %description
-This is a modification of the 'Crypt::RSA' module to remove all
-use and dependencies on 'Pari' and 'Math::Pari'.
+This is a modification of the `Crypt::RSA` module to remove all
+use and dependencies on `Pari` and `Math::Pari`.
 
 
 %prep
@@ -145,5 +148,8 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
+* Wed Dec 11 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.06-0.rc2
+- Spec file cleanup
+
 * Fri Dec 06 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.06-0.rc1
 - Initial spec file for YJL 6.6 (LFS 12.2 based)
