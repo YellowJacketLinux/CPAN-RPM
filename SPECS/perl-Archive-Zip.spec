@@ -6,7 +6,7 @@ Release:  %{?repo}0.rc2%{?dist}
 Summary:  Provide an interface to ZIP archive files
 BuildArch: noarch
 
-Group:    System Environment/Libraries
+Group:    Perl/Libraries
 License:  GPL-1.0-or-later or Artistic-1.0-Perl
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/P/PH/PHRED/%{cpanname}-%{version}.tar.gz
