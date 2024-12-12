@@ -2,19 +2,20 @@
 
 Name:     perl-%{cpanname}
 Version:  0.88
-Release:  %{?repo}0.rc1%{?dist}
+Release:  %{?repo}0.rc2%{?dist}
 Summary:  A generic archive extracting mechanism
 BuildArch: noarch
 
-Group:    System Environment/Libraries
+Group:    Perl/Libraries
 License:  GPL-1.0-or-later or Artistic-1.0-Perl
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/B/BI/BINGOS/%{cpanname}-%{version}.tar.gz
-Source90: PERL-Artistic
-Source91: PERL-Copying
+Source90: Artistic-1.0-Perl.txt
+Source91: GPL-1.0.txt
 
 BuildRequires: perl-devel
 BuildRequires: perl(ExtUtils::MakeMaker)
+#
 BuildRequires: perl(Carp)
 BuildRequires: perl(Cwd)
 BuildRequires: perl(File::Basename)
@@ -27,10 +28,15 @@ BuildRequires: perl(Module::Load::Conditional) >= 0.66
 BuildRequires: perl(Params::Check) >= 0.07
 BuildRequires: perl(Test::More)
 BuildRequires: perl(constant)
+BuildRequires: perl(deprecate)
 BuildRequires: perl(if)
+BuildRequires: perl(strict)
 BuildRequires: perl(vars)
 %if 0%{?perl5_API:1} == 1
 Requires: %{perl5_API}
+%else
+Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+Requires: %{perl5_vendorlib}
 %endif
 Requires: perl(Carp)
 Requires: perl(Cwd)
@@ -43,18 +49,21 @@ Requires: perl(Locale::Maketext::Simple)
 Requires: perl(Module::Load::Conditional) >= 0.66
 Requires: perl(Params::Check) >= 0.07
 Requires: perl(constant)
+Requires: perl(deprecate)
 Requires: perl(if)
 Requires: perl(strict)
 Requires: perl(vars)
+#
 Requires: %{__tar}
+#
 Provides: perl(Archive::Extract) = %{version}
 
 %description
-'Archive::Extract' is a generic archive extraction mechanism.
+`Archive::Extract` is a generic archive extraction mechanism.
 
-It allows you to extract any archive file of the type '.tar',
-'.tar.gz', '.gz', '.Z', 'tar.bz2', '.tbz', '.bz2', '.zip', '.xz',
-'.txz', '.tar.xz', or '.lzma' without having to worry how it does
+It allows you to extract any archive file of the type `.tar`,
+`.tar.gz`, `.gz`, `.Z`, `tar.bz2`, `.tbz`, `.bz2`, `.zip`, `.xz`,
+`.txz`, `.tar.xz`, or `.lzma` without having to worry how it does
 so, or use different interfaces for each type by using either
 perl modules, or commandline tools on your system.
 
@@ -63,6 +72,21 @@ perl modules, or commandline tools on your system.
 %setup -q -n %{cpanname}-%{version}
 cp %{SOURCE90} .
 cp %{SOURCE91} .
+# Extract license info from README
+cat << "EOF" > Perl-License-Extracted.txt
+The following was extracted from
+
+  %{_datadir}/doc/perl-%{cpanname}-%{version}/README
+
+
+EOF
+
+START=`grep -n "^COPYRIGHT" README |cut -d":" -f1`
+END=`wc -l README |cut -d " " -f1`
+DIFF="$((${END}-${START}))"
+TAIL="$((${DIFF}+1))"
+
+tail -${TAIL} README >> Perl-License-Extracted.txt
 
 
 %build
@@ -89,12 +113,15 @@ make test > %{name}-make.test.log 2>&1
 %dir %{perl5_vendorlib}/Archive
 %{perl5_vendorlib}/Archive/Extract.pm
 %attr(0644,root,root) %{_mandir}/man3/Archive::Extract.3*
-%license README PERL-Artistic PERL-Copying
+%license Perl-License-Extracted.txt Artistic-1.0-Perl.txt GPL-1.0.txt
 %doc %{name}-make.test.log
-%doc README PERL-Artistic PERL-Copying
+%doc CHANGES README Perl-License-Extracted.txt
 
 
 
 %changelog
+* Wed Dec 11 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.88-0.rc2
+- Fix license info, cleanup spec file
+
 * Thu Dec 05 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.88-0.rc1
 - Initial spec file for YJL 6.6 (LFS 12.2 based)
