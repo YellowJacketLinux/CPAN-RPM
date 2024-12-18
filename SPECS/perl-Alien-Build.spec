@@ -15,7 +15,7 @@ Summary:  Build external dependencies for use in CPAN
 BuildArch: noarch
 
 Group:    Perl/Installer-Tools
-License:  GPL-1.0-or-later or Artistic-1.0-Perl
+License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/%{cpanname}-%{version}.tar.gz
 
@@ -281,7 +281,7 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
-* Wed Dec 11 2024 Michael A. Peters <anymouseprophet@gmail.com> - 2.84-0.rc3
+* Wed Dec 18 2024 Michael A. Peters <anymouseprophet@gmail.com> - 2.84-0.rc3
 - Some spec file cleanup for YJL standards
 
 * Fri Dec 06 2024 Michael A. Peters <anymouseprophet@gmail.com> - 2.84-0.rc2

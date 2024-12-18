@@ -7,7 +7,7 @@ Summary:  Compute 'intelligent' differences between two files / lists
 BuildArch: noarch
 
 Group:    Perl/Libraries
-License:  GPL-1.0-or-later or Artistic-1.0-Perl
+License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/R/RJ/RJBS/%{cpanname}-%{version}.tar.gz
 Source90: Artistic-1.0-Perl.txt
@@ -15,12 +15,14 @@ Source91: GPL-1.0.txt
 
 BuildRequires: perl-devel
 BuildRequires: perl(ExtUtils::MakeMaker)
+#
 BuildRequires: perl(Carp)
 BuildRequires: perl(Exporter)
 BuildRequires: perl(integer)
 BuildRequires: perl(strict)
 BuildRequires: perl(vars)
 BuildRequires: perl(warnings)
+#
 %if 0%{?perl5_API:1} == 1
 Requires: %{perl5_API}
 %else
@@ -32,6 +34,7 @@ Requires: perl(Exporter)
 Requires: perl(integer)
 Requires: perl(strict)
 Requires: perl(vars)
+#
 Provides: perl(Algorithm::Diff) = %{version}
 Provides: perl(Algorithm::DiffOld) = %{version}
 
@@ -92,8 +95,8 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
-* Wed Dec 11 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.201-0.rc2
-- Fix up License
+* Wed Dec 18 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.201-0.rc2
+- Fix up License, spec file cleanup
 
 * Sun Nov 24 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.201-0.rc1
 - Initial spec file for YJL 6.6 (LFS 12.2 based)

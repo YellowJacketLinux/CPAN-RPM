@@ -8,7 +8,7 @@ BuildArch: noarch
 Conflicts: perl-Crypt-RSA
 
 Group:    Perl/Libraries
-License:  GPL-1.0-or-later or Artistic-1.0-Perl
+License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/D/DA/DANAJ/%{cpanname}-%{version}.tar.gz
 
@@ -44,6 +44,7 @@ BuildRequires: perl(constant)
 BuildRequires: perl(strict)
 BuildRequires: perl(vars)
 BuildRequires: perl(warnings)
+#
 %if 0%{?perl5_API:1} == 1
 Requires: %{perl5_API}
 %else
@@ -148,7 +149,7 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
-* Wed Dec 11 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.06-0.rc2
+* Wed Dec 18 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.06-0.rc2
 - Spec file cleanup
 
 * Fri Dec 06 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.06-0.rc1

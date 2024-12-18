@@ -7,7 +7,7 @@ Summary:  Alien package for CMake 3 or better
 BuildArch: noarch
 
 Group:    Perl/Development
-License:  GPL-1.0-or-later or Artistic-1.0-Perl
+License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/%{cpanname}-%{version}.tar.gz
 
@@ -94,7 +94,7 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
-* Wed Dec 11 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.08-0.rc2
+* Wed Dec 18 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.08-0.rc2
 - Spec file cleanup
 
 * Thu Dec 05 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.08-0.rc1

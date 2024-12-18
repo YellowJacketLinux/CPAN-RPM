@@ -7,7 +7,7 @@ Summary:  A Module::Build subclass for building Alien:: modules and libraries
 BuildArch: noarch
 
 Group:    Perl/Development
-License:  GPL-1.0-or-later or Artistic-1.0-Perl
+License:  Artistic-1.0-Per or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/%{cpanname}-%{version}.tar.gz
 
@@ -49,6 +49,7 @@ BuildRequires: perl(URI::file)
 BuildRequires: perl(parent)
 BuildRequires: perl(strict)
 BuildRequires: perl(warnings)
+#
 %if 0%{?perl5_API:1} == 1
 Requires: %{perl5_API}
 %else
@@ -147,7 +148,7 @@ find %{buildroot} -type f -name .packlist -delete
 
 
 %changelog
-* Wed Dec 11 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.17-0.rc2
+* Wed Dec 18 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.17-0.rc2
 - Some spec file cleanup to meet YJL standards.
 
 * Thu Dec 05 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.17-0.rc1

@@ -7,7 +7,7 @@ Summary:  SASL Authentication framework
 BuildArch: noarch
 
 Group:    Perl/Network
-License:  GPL-1.0-or-later or Artistic-1.0-Perl
+License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/E/EH/EHUELS/%{cpanname}-%{version}.tar.gz
 
@@ -102,7 +102,7 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
-* Thu Dec 12 2024 Michael A. Peters <anymouseprophet@gmail.com> - 2.1700-0.rc2
+* Wed Dec 18 2024 Michael A. Peters <anymouseprophet@gmail.com> - 2.1700-0.rc2
 - Some spec file cleanup
 
 * Sun Nov 17 2024 Michael A. Peters <anymouseprophet@gmail.com> - 2.1700-0.rc1

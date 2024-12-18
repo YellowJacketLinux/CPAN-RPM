@@ -27,6 +27,7 @@ BuildRequires: perl(Test2::V0) >= 0.000060
 BuildRequires: perl(base)
 BuildRequires: perl(strict)
 BuildRequires: perl(warnings)
+#
 %if 0%{?perl5_API:1} == 1
 Requires: %{perl5_API}
 %else
@@ -97,7 +98,7 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
-* Wed Dec 11 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.16-0.rc2
+* Wed Dec 18 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.16-0.rc2
 - Change License: field to valid SPDX identifier, spec file cleanup.
 
 * Fri Dec 06 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.16-0.rc1

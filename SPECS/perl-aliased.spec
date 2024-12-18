@@ -7,7 +7,7 @@ Summary:  Use shorter versions of class names
 BuildArch: noarch
 
 Group:    Perl/Libraries
-License:  GPL-1.0-or-later or Artistic-1.0-Perl
+License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/E/ET/ETHER/%{cpanname}-%{version}.tar.gz
 
@@ -76,7 +76,7 @@ find %{buildroot} -type f -name .packlist -delete
 
 
 %changelog
-* Tue Dec 17 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.34-0.rc3
+* Wed Dec 18 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.34-0.rc3
 - Spec file cleanup
 
 * Fri Nov 29 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.34-0.rc2

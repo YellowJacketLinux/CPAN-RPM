@@ -7,7 +7,7 @@ Summary:  Provide an interface to ZIP archive files
 BuildArch: noarch
 
 Group:    Perl/Libraries
-License:  GPL-1.0-or-later or Artistic-1.0-Perl
+License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/P/PH/PHRED/%{cpanname}-%{version}.tar.gz
 Source90: Artistic-1.0-Perl.txt
@@ -38,7 +38,9 @@ BuildRequires: perl(Test::More) >= 0.88
 BuildRequires: perl(Time::Local)
 BuildRequires: perl(constant)
 BuildRequires: perl(integer)
+BuildRequires: perl(strict)
 BuildRequires: perl(vars)
+#
 %if 0%{?perl5_API:1} == 1
 Requires: %{perl5_API}
 %else
@@ -160,7 +162,7 @@ make test > %{name}-make.test.log 2>&1
 %doc Perl-License-Extracted.txt
 
 %changelog
-* Wed Dec 11 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.68-0.rc2
+* Wed Dec 18 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.68-0.rc2
 - Clear up license files, general spec file cleanup
 
 * Thu Nov 28 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.68-0.rc1
