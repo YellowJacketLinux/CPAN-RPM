@@ -111,7 +111,7 @@ version comparison purposes, pretend it does not exist.
 
 
 Perl Version
-------------
+============
 
 When the version of Perl itself needs to be specified in an RPM spec file
 (usually as a `BuildRequires:` but on some occasions as a `Requires:`) then the
