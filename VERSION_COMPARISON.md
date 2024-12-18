@@ -1,6 +1,15 @@
 Version Comparison
 ==================
 
+### Copyright and License
+
+This `VERSION_COMPARISON.md` file is (c)2024 Michael A. Peters and licensed
+under the ‘GNU Free Document License version 1.3’ as described in the
+[`fdl-1.3.txt`](fdl-1.3.txt) file in the top level of this project directory.
+
+Version Comparison Issue
+------------------------
+
 When dealing with numeric version numbers, the RPM Package Manager (RPM) sorts
 versions differently than the *typical* Perl version sorting scheme. In the
 past this has caused issues, which is why all RPM based GNU/Linux distributions
