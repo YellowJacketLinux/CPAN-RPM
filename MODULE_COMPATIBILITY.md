@@ -142,8 +142,12 @@ Perl module RPM spec files will then have the following `Requires:`
 
     Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
 
-The `%(eval `perl -V:version`; echo $version)` expression *always* evaluates to
-the ‘three-part’ version number variant of Perl.
+The expression
+
+    %(eval `perl -V:version`; echo $version)
+
+*always* evaluates to the ‘three-part’ version number variant of Perl on the
+build system.
 
 This restricts the RPM to the same maintenance patch level of Perl used to build
 the RPM but there are two problems with that method:
