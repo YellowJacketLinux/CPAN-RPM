@@ -114,7 +114,7 @@ Perl Version
 ------------
 
 When the version of Perl itself needs to be specified in an RPM spec file
-(usually as a `BuildRequires:` but on some occasions as a `Requires:` then the
+(usually as a `BuildRequires:` but on some occasions as a `Requires:`) then the
 so-called ‘three-part’ version number variant for Perl __*MUST*__ be used rather
 than the float version number.
 
