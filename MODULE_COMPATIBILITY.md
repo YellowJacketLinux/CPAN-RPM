@@ -67,7 +67,7 @@ compile-time options:
   have absolutely no business installing Perl modules in this `@INC` directory.
   Many GNU/Linux distributions define this directory to be within `/usr/local`
   but some may not.
-* __`Dsitearch`__ defines where *architecture dependent* Perl modules that are
+* __`-Dsitearch`__ defines where *architecture dependent* Perl modules that are
   installed from source by the system administrator are installed. RPM packages
   have absolutely no business installing Perl modules in this `@INC` directory.
   Many GNU/Linux distributions define this directory to be within `/usr/local`
@@ -89,6 +89,10 @@ This gives YJL three different site-wide `@INC` directories:
 * `/usr/lib/perl5/perl5.x/vendor_perl`
 * `/usr/local/lib/perl5/perl5.x/site_perl`
 
+The `5.x` represents the Perl version *without* the patch level. For example, in
+YJL 6.6 which uses Perl 5.40, `5.40` would be used. Some GNU/Linux distributions
+do include the patch level in their system-wide `@INC` directory definitions.
+
 Other `@INC` can be defined by the user or by the Perl script to define
 additional places for the Perl interpreter to search for Perl modules. For
 example, it is very common for users to install additional Perl modules in their
@@ -100,7 +104,26 @@ be avoided by third-party vendors and I suspect with good reason.
 The RPM Module Compatibility Problem
 ------------------------------------
 
-Foo
+Different GNU/Linux distributions define those compile-time options differently
+and I do not believe the LSB *or any other generic specification* has any
+business dictating what those compile-time options should be.
+
+Thanks to the power of RPM Macros, it is possible to write generic RPM spec
+files that will install the modules in the proper location for the GNU/Linux
+distribution the RPM spec file is built on. However once the RPM is built, the
+installable RPM must be restricted to systems that use the same `@INC` scheme
+at least for `-Dvendorlib` or `-Dvendorarch` depending upon whether or not
+the package is architecture independent or not.
+
+Unfortunately the LSB does not specify a mechanism for ensuring that an
+installable Perl RPM was built using a suitable `@INC` scheme for the system the
+RPM is being installed on.
+
+The method most commonly used is what I call the ‘Red Hat Way’ although I do not
+know if Red Hat was the first to use it. All Red Hat systems I have used and
+most other RPM distributions support this method. YJL supports it too for the
+sake of compatibility but it is not the method implemented by YJL for YJL
+Perl modules.
 
 
 The ‘Red Hat Way’
@@ -108,3 +131,36 @@ The ‘Red Hat Way’
 
 The ‘Red Hat Way’ of dealing with the issue is pretty standard across RPM based
 GNU/Linux distributions but I believe is insufficient.
+
+With the ‘Red Hat Way’ the main `perl` RPM has the following `Provides:`:
+
+    Provides: perl(:MODULE_COMPAT_%{version})
+
+where `%{version}` __MUST__ be the ‘three-part’ version number variant. The
+reason why it __MUST__ be the ‘three-part’ version number variant is because
+Perl module RPM spec files will then have the following `Requires:`
+
+    Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+
+The `%(eval `perl -V:version`; echo $version)` expression *always* evaluates to
+the ‘three-part’ version number variant of Perl.
+
+This restricts the RPM to the same maintenance patch level of Perl used to build
+the RPM but there are two problems with that method:
+
+1. It does not verify that the same `@INC` scheme was used. This can result in
+   an RPM that installs but for which the module is installed in a directory
+   that `perl` does not search.
+2. It means that every single package that includes a Perl module must be
+   updated every time a new patch level maintenance release of Perl is
+   provided.
+
+The way that most RPM based GNU/Linux distributions deal with the second issue
+is they rarely provide new patch level maintenance releases, instead opting to
+backport bug fixes into the ‘three-part’ version number they originally
+shipped. It works, but it certainly is not KISS, and it means that there is an
+inconsistency in how a particular ‘three-part’ version behaves across different
+operating systems. This can cause a problem when a Perl module requires a
+specific patch level because it depends upon a fix that took place in a specific
+patch level. It may be a current ‘defacto’ standard practice among GNU/Linux
+distributions but it is dirty and I do not like it. 
