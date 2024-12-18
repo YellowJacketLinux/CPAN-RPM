@@ -327,7 +327,7 @@ language could read RPM package metadata in their preferred language.
 What to do with the `Group:` field in an RPM spec file is something I am still
 pondering.
 
-My present scheme is outlined in the file [GROUPS.md](groups.md).
+My present scheme is outlined in the file [GROUPS.md](GROUPS.md).
 
 #### License
 
