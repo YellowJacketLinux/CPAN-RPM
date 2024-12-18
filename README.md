@@ -327,6 +327,8 @@ language could read RPM package metadata in their preferred language.
 What to do with the `Group:` field in an RPM spec file is something I am still
 pondering.
 
+My present scheme is outlined in the file [GROUPS.md](groups.md).
+
 #### License
 
 Most of my current spec files as they sit in my home directory do this
@@ -378,13 +380,11 @@ A difference in how Perl compares versions (as floats) with how RPM compares
 versions can also be an issue, but rarely so these days and the solution is
 generally easy.
 
-When defining the `BuildRequires:` fields, I assume that the following four
+When defining the `BuildRequires:` fields, I assume that the following two
 modules are available on the system building the RPM spec file:
 
 * `perl(Test)`
 * `perl(Test::Harness)`
-* `perl(strict)`
-* `perl(warnings)`
 
 Any other modules that are needed to run the installer or the tests *must* be
 explicitly specified with a `BuildRequires:` field.
@@ -467,17 +467,13 @@ defined.
 
 ### Runtime Dependencies
 
-With the noted exception of `perl(strict)` and `perl(warnings)` I believe it is
-a ‘Best Practice’ to add all runtime dependencies as `BuildRequires` as well as
-adding them as `Requires` even if they technically are not needed to install
-and test the module.
+I believe it is a ‘Best Practice’ to add all runtime dependencies as
+`BuildRequires` as well as adding them as `Requires` even if they technically
+are not needed to install and test the module.
 
 All Perl modules that are runtime dependencies need to be specified as runtime
 dependencies with a `Requires:` field. Assumptions about what is already
 installed *should not be made*.
-
-For runtime dependencies, I do include `perl(strict)` and `perl(warnings)` when
-they are runtime dependencies.
 
 The CPAN distribution `META.yml` *usually* specify what non-Core runtime
 dependencies are needed but they quite frequently make assumptions that modules
