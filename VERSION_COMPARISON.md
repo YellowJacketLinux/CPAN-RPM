@@ -73,8 +73,8 @@ Perl Module Version
 
 In addition to the CPAN distribution version number, modules within a CPAN
 distribution will *usually* also have a version number. More often than not,
-this module number will match the CPAN distribution version number, but it does
-not have to and sometimes it will be different.
+this module version number will match the CPAN distribution version number, but
+it does not have to match and sometimes it will be different.
 
 The version of a Perl module provides is specified in the RPM spec file using
 the `Provides:` metadata tag. For example:
