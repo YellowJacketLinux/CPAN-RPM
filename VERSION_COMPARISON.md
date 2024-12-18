@@ -20,11 +20,11 @@ RPM likes to view a version as fields delimited by a period. The version number
 `2.54` to RPM is a version with two fields, the first field being `2` and the
 second field being `54`.
 
-Unless specifically signalled to do otherwise with a leading `v`, Perl likes to
+Unless specifically flagged to do otherwise with a leading `v`, Perl likes to
 view a version as a floating point number.
 
 In RPM, the version `2.54` is seen as a newer version than the version `2.6`
-becaise with the first field (`2`) being equal for both, `54` is larger than `6`
+because with the first field (`2`) being equal for both, `54` is larger than `6`
 so `2.54` corresponds with the newer version.
 
 With Perl however, the float `2.6` is larger than the float `2.54` so `2.6` is
@@ -56,14 +56,14 @@ version of the `Fubar` distribution.
 Hopefully that never needs to be done but the possibility exists that at some
 point it may be needed. If the need arises, the CPAN maintainer should be
 contacted first, they may be willing to push an update that pads the decimal
-part of the version number with zeros to accomodate distribution packagers.
+part of the version number with zeros to accommodate distribution packagers.
 
 ### Version with a leading `v`
 
 A few CPAN distributions have version numbers with a leading `v`. That leading
 `v` is not actually part of the distribution version but is a signal to Perl
 that the distribution does not use floats for the version but instead uses a
-period as a field delimeter, just like what RPM does natively. In those cases,
+period as a field delimiter, just like what RPM does natively. In those cases,
 the `v` __*SHOULD NOT*__ be part of the RPM `Version:` metadata or else RPM
 will use string comparisons for that field.
 
@@ -115,9 +115,53 @@ Perl Version
 
 When the version of Perl itself needs to be specified in an RPM spec file
 (usually as a `BuildRequires:` but on some occasions as a `Requires:` then the
-so-called ‘three-part’ version number for perl __*MUST*__ be used rather than
-the float version number.
+so-called ‘three-part’ version number variant for Perl __*MUST*__ be used rather
+than the float version number.
 
+In the rare cases where a Perl script specifies the Perl version it wants using
+a version that starts with a lower case `v` then the version number is already
+in the ‘three-part’ version number variant. For example:
+
+    use v5.8.1
+
+That means `5.8.1` is the minimum ‘three-part’ version number variant for Perl
+that is required. To require that version of Perl as a minimum `BuildRequires:`
+it would be specified like this:
+
+    BuildRequires: perl(:VERSION) >= 5.8.1
+
+Note that sometimes the third part is not specified if zero:
+
+    use v5.8
+
+That means `5.8.0` is the minimum ‘three-part’ version number variant for Perl
+that is required.
+
+When a Perl version is specified by a Perl script, *usually* the float variant
+of the Perl version is specified and RPM packagers have to convert the float
+variant to the ‘three-part’ version number. This conversion method applies to
+Perl itself, not to CPAN modules.
+
+For Perl5, the float variant of the version number will be a `5` followed by a
+dot and then followed by 1–6 decimal places. First pad it out (if needed) to
+six decimal places. For example:
+
+    use 5.00405
+
+There are five decimal places, so the float would be padded out to `5.004050`.
+
+The `5` represents the first number in the ‘three-part’ version number variant.
+The first three decimal places *without the leading zeros* represent the second
+number in the ‘three-part’ version number variant. The last three decimal places
+*without the leading zeros* represent the third number in the ‘three-part’
+version number variant.
+
+Thus `5.008001` is equivalent to `5.8.1`, `5.04` is equivalent to `5.40.0`, and
+`5.00405` is equivalent to `5.4.50`.
+
+As far as I can tell, the Linux Standards Base (LSB) does not specifically
+require the distribution `perl` RPM to provide `perl(:VERSION) = 5.x.y` but it
+should, and every RPM based distribution I have looked at does in fact do that.
 
 
 
