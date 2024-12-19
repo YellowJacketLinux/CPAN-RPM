@@ -46,7 +46,7 @@ BuildRequires: perl(vars)
 BuildRequires: perl(warnings)
 #
 %if 0%{?perl5_API:1} == 1
-Requires: %{perl5_API}
+Requires: %{perl5_API} >= 5.8.0
 %else
 Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
 Requires: %{perl5_vendorlib}
