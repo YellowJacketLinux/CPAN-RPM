@@ -205,44 +205,10 @@ much less likely to change or vanish over time.
 
 The `Version:` field *must* match the version number in the source tarball
 *unless* the version number in the source tarball starts with `v` or contains
-an underscore. With CPAN packages that start with a `v`, the `v` should be
-omitted from the RPM package `Version:` metadata. When a package contains an
-an `_` underscore in the version, it is a test release and *probably* should
-not be packaged *however* if it is packaged, the `_` should be omitted. Perl
-itself ignores the underscore in its own version comparison, it is purely
-decorative for humans.
+an underscore.
 
-Perl version (except those that start with a `v`) are floating point decimal
-numbers, so for example, `3.2` is seen as newer than `3.15`. However, RPM sees
-these numbers as integer fields delimited by a `.` so `3.15` is seen as newer
-than `3.2`. This can cause a problem.
-
-At this point, *most* Perl developers on CPAN are aware of this issue and will
-pad their version numbers with trailing zeros (e.g. `3.20` in the previous
-example) so that the version sort order works with both Perl and with packaging
-systems like RPM, but the possibility of an update to a package on CPAN looking
-like it is an older version to RPM still exists.
-
-If a CPAN update looks older to RPM because of how Perl sees versions, there
-are two solutions I am aware of:
-
-1. Pad the Perl version with trailing 0s so that it becomes a larger integer
-   than the previous release. This solution avoids the need for an `Epoch:`
-   metadata field, but it means the `Version:` metadata field no longer
-   matches the tarball.
-2. Use an `Epoch:` in the RPM spec file. That allows a `Version:` metadata
-   field that matches the source tarball and while I dislike having to do it,
-   I think it is the cleanest way to solve the issue.
-
-Fortunately, at the start of this project, most CPAN authors are aware of the
-issue and pad the version themselves, so hopefully a remedy by the RPM packager
-will rarely be needed.
-
-When a Perl version starts with a `v`, that actually tells the Perl version
-parser that the version is integer fields delimited by a `.` which is exactly
-how RPM already views versions, so removing the `v` from the `Version:` field
-is both safe and avoids RPM from interpreting the `v` as part of the version
-which would invoke string comparisons instead of integer comparisons.
+Detailed information on how to handle the Perl versioning scheme in RPM is
+documented in the file [`VERSION_COMPARISON.md`](VERSION_COMPARISON.md).
 
 #### Release Metadata
 
@@ -404,27 +370,13 @@ defined.
 When the Perl module has a minimum Perl version that is needed, the spec file
 *must* have
 
-    BuildRequires: perl(:VERSION) >= 5.m.n
+    BuildRequires: perl(:VERSION) >= 5.x.y
 
-Where `m` is the second integer in the triplet and `n` is the patch level
+Where `x` is the second integer in the triplet and `y` is the patch level
 integer in the triplet.
 
-Sometimes the minimum Perl version is specified as a float, so you may need
-to convert it.
-
-When described as a float, pad it with zeros to six decimal places. Then the
-first three decimals after the dot correspond with `m` and the second set of
-three correspond with the `n`. For example:
-
-    use 5.00801  = use 5.008010 is the triplet 5.8.10
-    use 5.04     = use 5.040000 is the triplet 5.40.0
-    use 5.00504  = use 5.005040 is the triplet 5.5.40
-
-Sometimes, the minimum Perl version is specified with a leading `v` in which
-case no padding is necessary, but if it only specifies two parts of the
-triplet, you should add a zero as the third. For example:
-
-    use v5.8 is the triplet 5.8.0
+See the file [`VERSION_COMPARISON.md`](VERSION_COMPARISON.md) for information
+on the ‘three-part’ (triplet) version number variant for Perl.
 
 ### Signature Verification
 
@@ -546,42 +498,9 @@ Sometimes a single source file provides more than one module (more than one
 
 ### Module Install Compatibility
 
-The RPM spec file (and resulting `.src.rpm`) *hopefully* will be buildable on
-most RPM based GNU/Linux distributions with the minimum required Perl version
-but the installable RPM package will only work on distributions with the same
-Perl version *and* `@INC` scheme for vendor packaged modules.
-
-To avoid the installable RPM package installing on GNU/Linux distributions with
-a different Perl version and/or `@INC` scheme, the RPM spec file needs to have
-a conditional block.
-
-#### `.noarch.rpm` target:
-
-    %if 0%{?perl5_API:1} == 1
-    Requires: %{perl5_API}
-    %else
-    Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
-    Requires: %{perl5_vendorlib}
-    %endif
-
-On YJL and other system that use the previously described `%{perl5_API}` macro,
-that macro limits where it can be installed. For distributions without that
-macro, it falls back to the ‘Red Hat Way’ with the additional requirement of
-ensuring the directory defined by `%{perl5_vendorlib}` exists for use.
-
-#### Binary target:
-
-    %if 0%{?perl5_API:1} == 1
-    Requires: %{perl5_ABI}
-    %else
-    Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
-    Requires: %{perl5_vendorarch}
-    %endif
-
-On YJL and other system that use the previously described `%{perl5_ABI}` macro,
-that macro limits where it can be installed. For distributions without that
-macro, it falls back to the ‘Red Hat Way’ with the additional requirement of
-ensuring the directory defined by `%{perl5_vendorarch}` exists for use.
+To ensure module compatibility with the installed version of Perl, see the
+document [`MODULE_COMPATIBILITY.md`](MODULE_COMPATIBILITY.md) at the top
+level of this directory.
 
 
 The `%prep` section
