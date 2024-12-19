@@ -167,4 +167,73 @@ inconsistency in how a particular ‘three-part’ version behaves across differ
 operating systems. This can cause a problem when a Perl module requires a
 specific patch level because it depends upon a fix that took place in a specific
 patch level. It may be a current ‘defacto’ standard practice among GNU/Linux
-distributions but it is dirty and I do not like it. 
+distributions but it is dirty and I do not like it.
+
+
+The ‘YJL Way’
+-------------
+
+YJL defines two macros that currently are YJL specific but they do not have to
+be.
+
+### `%perl5_API`
+
+The `perl5_API` macro is defined as:
+
+    perl(:%{perl5_version}:%{perl5_vendorlib})
+
+The `%{perl5_version}` macro on YJL expands to `5.x` (e.g. 5.40) but if a
+distribution wants to force a rebuild of every single RPM containing a Perl
+module every time a new patch level maintenance release is made available,
+that distribution is free to do so.
+
+The `%{perl5_vendorlib}` macro is a standard vendor independent macro that
+expands to the `@INC` directory defined by the `-Dvendorlib` Perl compile-time
+flag.
+
+The YJL `perl` package has the following `Provides:`
+
+    Provides: %{perl5_API} = %{triplet}
+
+The `%{triplet}` macro is the ‘three-part’ version number variant of Perl.
+
+Architecture independent Perl modules then can have the following:
+
+    Requires: %{perl5_API}
+
+That ties the RPM to both the version of perl and the proper `@INC` scheme for
+architecture independent Perl modules.
+
+It is generally okay to leave the `Requires:` versionless but it can be set to
+specify the minimum version of Perl. For example:
+
+    Requires: %{perl5_API} >= 5.8.1
+
+### `@perl5_ABI`
+
+The `perl5_ABI` macro is defined as:
+
+    perl(:%{perl5_version}:%{perl5_os_platform}:%{perl5_vendorarch})
+
+The `%{perl5_os_platform}` macro expands to `%{_arch}-linux-thread-multi`
+(`x86_64-linux-thread-multi` on 64-bit systems) and `%{perl5_vendorarch}` is a
+standard vendor independent macro that expands to the `@INC` directory defined
+by the `-Dvendorarch` Perl compile-time flag.
+
+The YJL `perl` package has the following `Provides:`
+
+    Provides: %{perl5_API} = %{triplet}
+
+Architecture dependent Perl modules then can have the following:
+
+    Requires: %{perl5_ABI}
+
+That ties the RPM the the version of perl, the operating system platform, and
+the proper `@INC` scheme for architecture dependent Perl modules.
+
+It is generally okay to leave the `Requires:` versionless but it can be set to
+specify the minimum version of Perl. For example:
+
+    Requires: %{perl5_ABI} >= 5.8.1
+
+
