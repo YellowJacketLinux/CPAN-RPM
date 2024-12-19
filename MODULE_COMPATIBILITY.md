@@ -237,3 +237,40 @@ specify the minimum version of Perl. For example:
     Requires: %{perl5_ABI} >= 5.8.1
 
 
+The ‘Combined Way’
+------------------
+
+Whether I think it is dirty or not, the ‘Red Hat Way’ is the defacto standard
+and the ‘YJL Way’ uses what are currently distribution specific macros.
+
+Whenever possible, distribution specific macros should have a fall-back to a
+method that works even without those macros, and in the case of Perl modules,
+that method should be the ‘Red Hat Way’.
+
+For architecture independent Perl modules, YJL RPM spec files should have the
+following block for module compatibility:
+
+    %if 0%{?perl5_API:1} == 1
+    Requires: %{perl5_API}
+    %else
+    Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+    Requires: %{perl5_vendorlib}
+    %endif
+
+For architecture dependent Perl modules, YJL RPM spec files should have the
+following block for module compatibility:
+
+    %if 0%{?perl5_ABI:1} == 1
+    Requires: %{perl5_ABI}
+    %else
+    Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+    Requires: %{perl5_vendorarch}
+    %endif
+
+Using the appropriate conditional block allows users on non-YJL systems to
+rebuild a YJL Source RPM and get a package that properly works on their system.
+The need for that may be rare but a good RPM packager takes that need into
+consideration.
+
+
+
