@@ -137,6 +137,12 @@ same limitations as the ‘Red Hat Way’. Please see the document
 of the ‘Red Hat Way’, the ‘YJL Way’, and how RPM spec files can accomodate both
 methods of ensuring ‘Module Compatibility’.
 
+Even though the LSB does not require it, it is my *strong opinion* that all RPM
+packaging of `perl` should accomodated the ‘Red Hat Way’ of providing ‘Module
+Compatibility’ even if they also provide for the ‘YJL Way’. That way, end users
+who need to rebuild a Fedora (or whatever) `src.rpm` will have an easier time
+getting what they need.
+
 ### RPM Spec File Requirements
 
 #### `%{cpanname}` related metadata
@@ -254,7 +260,8 @@ language could read RPM package metadata in their preferred language.
 What to do with the `Group:` field in an RPM spec file is something I am still
 pondering.
 
-My present scheme is outlined in the file [GROUPS.md](GROUPS.md).
+My present scheme is outlined in the file [GROUPS.md](GROUPS.md). Consider that
+file subject to radical future change.
 
 #### License
 
@@ -263,9 +270,14 @@ incorrectly. Cleanup is underway, this is important to do correctly.
 
 When a CPAN distribution comes with a proper `LICENSE` (or related) file, life
 is good. That file should be included in the `%files` section using *both* the
-`%license` macro __and__ the `%doc` macro. When the license has a SPDX
-identifier (see https://spdx.org/licenses/ ) that identifier should be used in
+`%license` macro __and__ the `%doc` macro. When the license has a [SPDX
+identifier](https://spdx.org/licenses/) that identifier should be used in
 the RPM spec file `License:` field.
+
+RPM itself does not specify that SPDX needs to be used but at least for ‘Free
+Libre Open Source Software’ (FLOSS) using the SPDX identifier has become the
+fairly standard mechanism for identifying the license, and with very good
+reason: It greatly reduces confusion *when done correctly*.
 
 More than one package I have encountered have a `LICENCE` file that specifies
 both ‘GPL 1.0 or later or Artistic 1.0’ but then in includes the text of the
@@ -275,21 +287,26 @@ in a program that generated the `LICENSE` file for the author.
 
 In those cases due to the ambiguity, I pick the included license text and use:
 
-    License: GPL-2.0-or-later or Artistic-1.0-Perl
+    License: Artistic-1.0-Perl or GPL-2.0-or-later
 
 Many distributions on CPAN specify the license terms but fail to include the
-actual license text. In these cases, the actual license texts are added as a
-source file (starting with `Source90`) and should be included with the
+actual license text. In these cases, the actual license text should be added as
+a source file (starting with `Source90`) and should be included with the
 `%license` macro but they should *not* be included with the `%doc` macro as
 they are not part of the original source code distribution.
 
 Usually in these cases, the license is mention in the `README` file but in some
-cases I have to hunt for it in a module POD.
+cases I have had to hunt for it in a module POD. I wish more CPAN maintainers
+understood the importance of including the actual license text as a file in
+their CPAN distribution but I suppose it is what it is.
 
-What needs to happen, is in the `%prep` section of the spec file, a new file
-need to created that extracts the specified license terms *and* specifies what
-file the terms were extracted from that can also be packaged using the
-`%license` macro.
+What needs to happen in cases where the license is referenced in a README or
+module POD file: in the `%prep` section of the spec file, a new file needs to
+be created that extracts the specified license terms *and* specifies what file
+the terms were extracted from that can also be packaged using the `%license`
+macro so that future lawyers etc. who need to know precisely what terms were
+specified and where can easily find them in the source of the original CPAN
+distribution.
 
 BuildRequires, Requires, and Provides
 -------------------------------------
@@ -356,6 +373,11 @@ builds of a spec file or source RPM, signature verification should take place
 and the `cpansign` utility is needed for that. End users who really do not
 want to verify the integrity of the source tarball can define that macro in
 their `~/.rpmmacros` file. They also should get their head examined.
+
+Hopefully in the future, a mechanism for verifying signatures even in build
+systems like Mock will be achievable. For now, the RPM packager will have to
+make sure the signature is verified when the packager creates the `src.rpm`
+that is then built by Mock.
 
 ### Tests
 
