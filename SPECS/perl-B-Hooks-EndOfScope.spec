@@ -6,7 +6,7 @@ Release:  %{?repo}0.rc2%{?dist}
 Summary:  Execute code after a scope finished compilation
 BuildArch: noarch
 
-Group:    Development/Libraries
+Group:    Perl/Libraries
 License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/E/ET/ETHER/%{cpanname}-%{version}.tar.gz

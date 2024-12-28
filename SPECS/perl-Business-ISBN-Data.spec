@@ -6,7 +6,7 @@ Release:  %{?repo}0.rc1%{?dist}
 Summary:  Data pack for Business::ISBN
 BuildArch: noarch
 
-Group:    System Environment/Libraries
+Group:    Perl/Data
 License:  Artistic-2.0
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/B/BR/BRIANDFOY/%{cpanname}-%{version}.tar.gz

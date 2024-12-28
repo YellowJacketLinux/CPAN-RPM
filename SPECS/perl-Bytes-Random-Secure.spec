@@ -6,7 +6,7 @@ Release:  %{?repo}0.rc2%{?dist}
 Summary:  Perl extension to generate cryptographically-secure random bytes
 BuildArch: noarch
 
-Group:    System Environment/Libraries
+Group:    Perl/Libraries
 License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/D/DA/DAVIDO/%{cpanname}-%{version}.tar.gz

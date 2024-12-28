@@ -6,7 +6,7 @@ Release:  %{?repo}0.rc2%{?dist}
 Summary:  Work with International Standard Book Numbers
 BuildArch: noarch
 
-Group:    System Environment/Libraries
+Group:    Perl/Libraries
 License:  Artistic-2.0
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/B/BR/BRIANDFOY/%{cpanname}-%{version}.tar.gz

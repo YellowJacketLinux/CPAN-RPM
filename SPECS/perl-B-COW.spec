@@ -5,7 +5,7 @@ Version:  0.007
 Release:  %{?repo}0.rc2%{?dist}
 Summary:  Additional B helpers to check COW status
 
-Group:    System Environment/Libraries
+Group:    Perl/Libraries
 License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/A/AT/ATOOMIC/%{cpanname}-%{version}.tar.gz

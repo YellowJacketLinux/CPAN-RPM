@@ -17,6 +17,15 @@ An attempt to provide some same `Group:` RPM metadata fields for CPAN RPM spec
 files.
 
 
+### Perl/Data
+
+CPAN distributions that package data to be used by other modules
+
+Currently assigned packages:
+
+* perl-Business-ISBN-Data
+
+
 ### Perl/Development
 
 CPAN distributions of primary interest to Perl module developers.
@@ -47,6 +56,11 @@ Currently assigned packages:
 * perl-Alt-Crypt-RSA-BigInt
 * perl-Archive-Extract
 * perl-Archive-Zip
+* perl-B-COW
+* perl-B-Hooks-EndOfScope
+* perl-B-Hooks-OP-Check
+* perl-Business-ISBN
+* perl-Bytes-Random-Secure
 * perl-aliased
 
 
