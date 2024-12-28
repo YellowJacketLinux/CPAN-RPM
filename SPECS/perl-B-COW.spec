@@ -2,16 +2,18 @@
 
 Name:     perl-%{cpanname}
 Version:  0.007
-Release:  %{?repo}0.rc1%{?dist}
+Release:  %{?repo}0.rc2%{?dist}
 Summary:  Additional B helpers to check COW status
 
 Group:    System Environment/Libraries
-License:  GPL-1.0-or-later or Artistic-1.0-Perl
+License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/A/AT/ATOOMIC/%{cpanname}-%{version}.tar.gz
 
+BuildRequires: perl(:VERSION) >= 5.8.0
 BuildRequires: perl-devel
 BuildRequires: perl(ExtUtils::MakeMaker)
+#
 BuildRequires: perl(CPAN::Meta) >= 2.120900
 BuildRequires: perl(Devel::Peek)
 BuildRequires: perl(Exporter)
@@ -19,8 +21,14 @@ BuildRequires: perl(File::Spec)
 BuildRequires: perl(Test::More)
 BuildRequires: perl(XSLoader)
 BuildRequires: perl(base)
+BuildRequires: perl(strict)
+BuildRequires: perl(warnings)
+#
 %if 0%{?perl5_ABI:1} == 1
-Requires: %{perl5_ABI}
+Requires: %{perl5_ABI} >= 5.8.0
+%else
+Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+Requires: %{perl5_vendorarch}
 %endif
 Requires: perl(Exporter)
 Requires: perl(XSLoader)
@@ -30,8 +38,8 @@ Requires: perl(warnings)
 Provides: perl(B::COW) = %{version}
 
 %description
-'B::COW' provides some naive additional B helpers to check the
-COW status of one SvPV.
+`B::COW` provides some naive additional `B` helpers to check the
+`COW` status of one SvPV.
 
 
 %prep
@@ -72,5 +80,8 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
+* Sat Dec 28 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.007-0.rc2
+- Spec file cleanup
+
 * Fri Nov 22 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.007-0.rc1
 - Initial spec file for YJL 6.6 (LFS 12.2 based)
