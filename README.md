@@ -122,60 +122,26 @@ of the LSB standard but the LSB seems to be dead, with no new release since
 
 #### Module Compatibility
 
-The RPM spec files in this repository provide two ways to bind an RPM package
-to the version of Perl the RPM was built for.
+So-called ‘Module Compatibility’ is to ensure that the packaged RPM will only
+install on systems where it actually will work.
 
-The ‘Red Hat Way’ (which I believe is also used by most other RPM-based
-GNU/Linux distributions) is to put the following in the `.spec` file:
+The `perl` RPM itself needs to provide for ‘Module Compatibility’.
 
-    Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+The LSB unfortunately does not specify how this is to be done. The ‘defacto’
+standard way is what I call the ‘Red Hat Way’ and all of the CPAN Perl RPM spec
+files will work with the ‘Red Hat Way’ in the interest of compatibility.
 
-That means the distribution `perl` package has to have that as a virtual
-provide. The `.spec` files in this directory fall back to that method if the
-operating system does not use the YJL method for ensuring the Perl module will
-work.
+However I have invented a new way I call the ‘YJL Way’ which does not have the
+same limitations as the ‘Red Hat Way’. Please see the document
+[`MODULE_COMPATIBILITY.md`](MODULE_COMPATIBILITY.md) for a detailed description
+of the ‘Red Hat Way’, the ‘YJL Way’, and how RPM spec files can accomodate both
+methods of ensuring ‘Module Compatibility’.
 
-The first issue I have with that method is that `perl -V:version` gives the
-integer triplet version of Perl but the last part of the triplet is just the
-*patch level* and a new Perl maintenance release with a higher *patch level*
-should not require all add-on modules be rebuilt.
-
-The second issue I have with the ‘Red Hat Way’ is it does not ensure the RPM
-package is placing the modules within the proper Perl `@INC` directory, which
-can and does vary between GNU/Linux distributions.
-
-YJL defines the following macros, in the same place where `%perl5_vendorlib`
-and `%perl5_vendorarch` are defined:
-
-    %perl5_os_platform %{_arch}-linux-thread-multi
-    %perl5_API perl(:%{perl5_version}:%{perl5_vendorlib})
-    %perl5_ABI perl(:%{perl5_version}:%{perl5_os_platform}:%{perl5_vendorarch})
-
-The latter two, `%perl5_API` and `%perl5_ABI`, expand to values provided by the
-YJL `perl` RPM package, and thus can be used as module compatibility requires
-in module packages.
-
-The macro `%{perl5_version}` on YJL expands to the version of Perl *without*
-the patch level (e.g. `5.36` on YJL 6.1 and `5.40` on YJL 6.6) but for others
-implementing the same system, it is okay if you put the full version
-*including* the patch level if implementing the same scheme in another OS
-distribution.
-
-These macros include the Perl `@INC` directory that RPM packages will put their
-module files into, thus ensuring that the package only installs on systems
-where it will actually be usable after installation.
-
-For `noarch` RPM packages, I use
-
-    Requires: %perl5_API
-
-For `x86_64` RPM packages, I use
-
-    Requires: %perl5_ABI
-
-The RPM `.spec` files in this project *only* use those `Requires` if they are
-defined. Otherwise, they fall back to the ‘Red Hat Way’ which works, but just
-is not ideal.
+Even though the LSB does not require it, it is my *strong opinion* that all RPM
+packaging of `perl` should accomodated the ‘Red Hat Way’ of providing ‘Module
+Compatibility’ even if they also provide for the ‘YJL Way’. That way, end users
+who need to rebuild a Fedora (or whatever) `src.rpm` will have an easier time
+getting what they need.
 
 ### RPM Spec File Requirements
 
@@ -294,7 +260,8 @@ language could read RPM package metadata in their preferred language.
 What to do with the `Group:` field in an RPM spec file is something I am still
 pondering.
 
-My present scheme is outlined in the file [GROUPS.md](GROUPS.md).
+My present scheme is outlined in the file [GROUPS.md](GROUPS.md). Consider that
+file subject to radical future change.
 
 #### License
 
@@ -303,9 +270,14 @@ incorrectly. Cleanup is underway, this is important to do correctly.
 
 When a CPAN distribution comes with a proper `LICENSE` (or related) file, life
 is good. That file should be included in the `%files` section using *both* the
-`%license` macro __and__ the `%doc` macro. When the license has a SPDX
-identifier (see https://spdx.org/licenses/ ) that identifier should be used in
+`%license` macro __and__ the `%doc` macro. When the license has a [SPDX
+identifier](https://spdx.org/licenses/) that identifier should be used in
 the RPM spec file `License:` field.
+
+RPM itself does not specify that SPDX needs to be used but at least for ‘Free
+Libre Open Source Software’ (FLOSS) using the SPDX identifier has become the
+fairly standard mechanism for identifying the license, and with very good
+reason: It greatly reduces confusion *when done correctly*.
 
 More than one package I have encountered have a `LICENCE` file that specifies
 both ‘GPL 1.0 or later or Artistic 1.0’ but then in includes the text of the
@@ -315,21 +287,26 @@ in a program that generated the `LICENSE` file for the author.
 
 In those cases due to the ambiguity, I pick the included license text and use:
 
-    License: GPL-2.0-or-later or Artistic-1.0-Perl
+    License: Artistic-1.0-Perl or GPL-2.0-or-later
 
 Many distributions on CPAN specify the license terms but fail to include the
-actual license text. In these cases, the actual license texts are added as a
-source file (starting with `Source90`) and should be included with the
+actual license text. In these cases, the actual license text should be added as
+a source file (starting with `Source90`) and should be included with the
 `%license` macro but they should *not* be included with the `%doc` macro as
 they are not part of the original source code distribution.
 
 Usually in these cases, the license is mention in the `README` file but in some
-cases I have to hunt for it in a module POD.
+cases I have had to hunt for it in a module POD. I wish more CPAN maintainers
+understood the importance of including the actual license text as a file in
+their CPAN distribution but I suppose it is what it is.
 
-What needs to happen, is in the `%prep` section of the spec file, a new file
-need to created that extracts the specified license terms *and* specifies what
-file the terms were extracted from that can also be packaged using the
-`%license` macro.
+What needs to happen in cases where the license is referenced in a README or
+module POD file: in the `%prep` section of the spec file, a new file needs to
+be created that extracts the specified license terms *and* specifies what file
+the terms were extracted from that can also be packaged using the `%license`
+macro so that future lawyers etc. who need to know precisely what terms were
+specified and where can easily find them in the source of the original CPAN
+distribution.
 
 BuildRequires, Requires, and Provides
 -------------------------------------
@@ -396,6 +373,11 @@ builds of a spec file or source RPM, signature verification should take place
 and the `cpansign` utility is needed for that. End users who really do not
 want to verify the integrity of the source tarball can define that macro in
 their `~/.rpmmacros` file. They also should get their head examined.
+
+Hopefully in the future, a mechanism for verifying signatures even in build
+systems like Mock will be achievable. For now, the RPM packager will have to
+make sure the signature is verified when the packager creates the `src.rpm`
+that is then built by Mock.
 
 ### Tests
 
@@ -545,209 +527,11 @@ texts of those licenses would thus start like thus:
     cp %{SOURCE91} .
 
 
-CPAN Distribution Build
------------------------
+The `%build`, `%install`, and `%check` Sections
+-----------------------------------------------
 
-There may be more, but there are four systems for building and installing CPAN
-distributions that are commonly encountered. Listed in the order of how
-frequently I encounter them:
-
-* `perl(ExtUtils::MakeMaker)` *(part of “Perl Core”)*
-* `perl(Module::Build)` *(formerly part of “Perl Core”)*
-* `perl(Module::Build::Tiny)`
-* `perl(inc::Module::Install)` *(A wrapper for `ExtUtils::MakeMaker`)*
-
-When a CPAN distribution has a `Makefile.PL` script, it *probably* uses either
-`ExtUtils::MakeMaker` or `inc::Module::Install` as the build system. If there
-is *also* a `Build.pl` script, ignore the presence of the `Makefile.PL` script.
-
-When a CPAN distribution has a `Build.PL` script, it uses either `Module::Build`
-or `Module::Build::Tiny`.
-
-When a CPAN distribution contains both, it uses `Module::Build` but has a
-compatibility wrapper allowing `ExtUtils::MakeMaker` to be used. Do not use the
-compatibility wrapper, just use `Module::Build` to build it.
-
-The system used is easily identified at the top of the `Makefile.PL` or
-`Build.PL` script. It needs to be a `BuildRequires`, I like to put it right
-after the `BuildRequires: perl-devel` so that it is easy to identify the CPAN
-build system used when reading the spec file. For example:
-
-    BuildRequires: perl(:VERSION) >= 5.8.1
-    BuildRequires: perl-devel
-    BuildRequires: perl(Module::Build::Tiny)
-    %if 0%{?!cpansigverify_skip:1} == 1
-    BuildRequires: cpansign >= 0.82
-    %endif
-    #
-
-All other `BuildRequires` then follow *preferably* in alphabetical order.
-
-### The `%build` Section for `Makefile.PM`
-
-For `ExtUtils::MakeMaker` and `inc::Module::Install` the `%build` section is
-identical and *generally* should look like this:
-
-    PERL_MM_USE_DEFAULT=1   \
-    BUILDING_AS_PACKAGE=1   \
-    perl Makefile.PL        \
-         INSTALLDIRS=vendor \
-         NO_PACKLIST=1      \
-         NO_PERLLOCAL=1     \
-         OPTIMIZE="$RPM_OPT_FLAGS"
-    make %{?_smp_mflags}
-
-The `PERL_MM_USE_DEFAULT=1` environmental variable tells `Makefile.PM` that you
-do not want an interactive build, and to use defaults where it might ask you
-questions.
-
-The `BUILDING_AS_PACKAGE=1` environmental variable is meaningless to *most* CPAN
-distributions but for a few, it tells the the script that was is being built is
-a package and not to do stuff inappropriate for a package. As far as I can tell,
-of all the CPAN packages I have built, only `ExtUtils::MakeMaker` itself has
-cared about that setting. It *may* not be needed for any other package.
-
-The `INSTALLDIRS=vendor` argument tells `Makefile.PM` that the Perl modules
-should be installed in the vendor `@INC` directory, which is specifically for
-Perl modules installed from an installation package.
-
-The `NO_PACKLIST=1` argument tells `Makefile.PL` not create a `.packlist` file.
-Those files are not meaningful to RPM managed installs, and are broken when a
-`DESTDIR` is used, so they should not be generated.
-
-The `NO_PERLLOCAL=1` argument tells `Makefile.PL` not to update the
-`perllocal.pod` file, which it should not do when building a package.
-
-The `OPTIMIZE="$RPM_OPT_FLAGS"` argument may actually not be needed with
-modern versions of Perl/MakeMaker, as it seems to get the right flags to use
-from how Perl itself was configured, but it still does not hurt to have it.
-Generally, `$RPM_OPT_FLAGS` tend to be a little more aggressive than default
-flags with respect to security (e.g. `-D_FORTIFY_SOURCE=2` and
-`-fstack-protector-strong`) and are good to use. Of course with `.noarch`
-packages that option is meaningless, but it does not hurt either.
-
-Sometimes, specific CPAN distributions will need a modification to the above
-`%build` section. Typically additional options can be discovered by reading the
-`INSTALL` file (if present), the `README` file, or the `Makefile.PL` file.
-
-`make %{?_smp_mflags}` builds the package.
-
-### The `%build` Section for `Build.PM`
-
-For `Module::Build` and `Module::Build::Tiny` the `%build` section is *almost*
-identical. For `Module::Build` it *generally* should look like this:
-
-    %build
-    PERL_MM_USE_DEFAULT=1   \
-    MODULEBUILDRC=/dev/null \
-    perl Build.PL --installdirs vendor
-    ./Build
-
-The `PERL_MM_USE_DEFAULT=1` environmental variable tells `Build.PL` that you do
-not want an interactive build, and to use defaults where it might ask you
-questions.
-
-The `MODULEBUILDRC=/dev/null` environmental variable ensures that
-`Module::Build` does not use a local configuration you might happen to have as
-a result of locally building Perl modules outside of RPM.
-
-That line is not needed for `Module::Build::Tiny` as it already does not make
-use of such configuration files.
-
-The `--installdirs vendor` option tells `Build.PL` that the Perl modules should
-be installed in the vendor `@INC` directory, which is specifically for Perl
-modules installed from an installation package.
-
-The final `./Build` line builds the package.
-
-Sometimes, specific CPAN distributions will need a modification to the above
-`%build` section. Typically additional options can be discovered by reading the
-`INSTALL` file (if present), the `README` file, or the `Build.PL` file.
-
-### The `%install` Section for `Makefile.PM`
-
-For `ExtUtils::MakeMaker` and `inc::Module::Install` the `%install` section is
-identical and *generally* should look like this:
-
-    %install
-    make install DESTDIR=%{buildroot}
-
-The `DESTDIR=%{buildroot}` causes the Perl module to be installed in the RPM
-build root where it can then be packaged as an installable RPM archive.
-
-### The `%install` Section for `Build.PM`
-
-Again, for `Module::Build` and `Module::Build::Tiny` the `%install` section is
-*almost* identical. For `Module::Build` it *generally* should look like this:
-
-    %install
-    ./Build pure_install --destdir %{buildroot}
-    find %{buildroot} -type f -name .packlist -delete
-
-The `--destdir %{buildroot}` causes the Perl module to be installed in the RPM
-build root where it can then be packaged as an installable RPM archive.
-
-The `pure_install` option tells `Module::Build` to just do an install, do not
-also update the `perllocal.pod` file.
-
-With `Module::Build::Tiny` the `pure_install` option does not exist, you have
-to use `install` instead of `pure_install`. It does not try to update the
-`perllocal.pod` file.
-
-The `find %{buildroot} -type f -name .packlist -delete` line removes the
-unneeded (and broken) `.packlist` file that both `Module::Install` and
-`Module::Build::Tiny` both install.
-
-### The `%check` Section for `Makefile.PM`
-
-For `ExtUtils::MakeMaker` and `inc::Module::Install` the `%check` section is
-identical and *generally* should look like this:
-
-    %check
-    make test > %{name}-make.test.log 2>&1
-
-This redirect of the `make test` output to `%{name}-make.test.log` allows the
-test output to be packaged in the `%files` section using the `%doc` macros so
-that users who have installed the package can inspect the test log for
-themselves.
-
-Sometimes, setting an environmental variable when running the test suite will
-cause more extensive testing to take place, such as in the `Type::Tiny` CPAN
-distribution where setting `EXTENDED_TESTING=1` triggers additional testing.
-
-### The `%check` Section for `Build.PM`
-
-For `Module::Build` and `Module::Build::Tiny` the `%check` section is
-identical and *generally* should look like this:
-
-    %check
-    ./Build test > %{name}-make.test.log 2>&1
-
-This redirect of the `make test` output to `%{name}-make.test.log` allows the
-test output to be packaged in the `%files` section using the `%doc` macros so
-that users who have installed the package can inspect the test log for
-themselves.
-
-Sometimes, setting an environmental variable when running the test suite will
-cause more extensive testing to take place.
-
-### DynaLoad Bootstrap Files and `Build.PM`
-
-When building XS modules, both `Module::Build` and `Module::Build::Tiny` will
-create a DynaLoad Bootstrap file that has an identical path as the binary
-shared object file, and share the same file name except it uses a `.bs`
-extension instead of a `.so` extension.
-
-This bootstrap file is typically empty and should not be needed on GNU/Linux
-systems. In the `%files` section of the spec file, it should be excluded from
-packaging using the `%exclude` macro. For example:
-
-    %attr(0555,root,root) %{perl5_vendorarch}/auto/Class/Plain/Plain.so
-    %exclude %{perl5_vendorarch}/auto/Class/Plain/Plain.bs
-
-If a Perl XS module needs to link to shared library in a non-standard location,
-the *proper* solution is for that non-standard location to be configured in a
-`/etc/ld.so.conf.d/` file rather than using a DynaLoad bootstrap file.
+Please see the separate document
+[`BUILD_INSTALL_CHECK.md`](BUILD_INSTALL_CHECK.md)
 
 
 The `%files` Section
