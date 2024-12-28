@@ -2,17 +2,19 @@
 
 Name:     perl-%{cpanname}
 Version:  0.28
-Release:  %{?repo}0.rc1%{?dist}
+Release:  %{?repo}0.rc2%{?dist}
 Summary:  Execute code after a scope finished compilation
 BuildArch: noarch
 
 Group:    Development/Libraries
-License:  GPL-1.0-or-later or Artistic-1.0-Perl
+License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/E/ET/ETHER/%{cpanname}-%{version}.tar.gz
 
+BuildRequires: perl(:VERSION) >= 5.6.1
 BuildRequires: perl-devel
 BuildRequires: perl(ExtUtils::MakeMaker)
+#
 BuildRequires: perl(CPAN::Meta) >= 2.120900
 BuildRequires: perl(Carp)
 BuildRequires: perl(File::Glob)
@@ -27,8 +29,13 @@ BuildRequires: perl(Tie::Hash)
 BuildRequires: perl(Variable::Magic) >= 0.48
 BuildRequires: perl(constant)
 BuildRequires: perl(lib)
+BuildRequires: perl(strict)
+BuildRequires: perl(warnings)
 %if 0%{?perl5_API:1} == 1
-Requires: %{perl5_API}
+Requires: %{perl5_API} >= 5.6.1
+%else
+Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+Requires: %{perl5_vendorlib}
 %endif
 Requires: perl(Carp)
 Requires: perl(Hash::Util::FieldHash)
@@ -47,7 +54,7 @@ Provides: perl(B::Hooks::EndOfScope::XS) = %{version}
 
 
 %description
-This module allows you to execute code when perl finished
+This module allows you to execute code when perl finishes
 compiling the surrounding scope.
 
 
@@ -91,5 +98,8 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
+* Sat Dec 28 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.28-0.rc2
+- Spec file cleanup
+
 * Thu Nov 21 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.28-0.rc1
 - Initial spec file for YJL 6.6 (LFS 12.2 based)
