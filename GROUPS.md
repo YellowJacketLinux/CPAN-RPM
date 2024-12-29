@@ -67,6 +67,7 @@ Currently assigned packages:
 * perl-Class-ErrorHandler
 * perl-Class-ISA
 * perl-Class-InsideOut
+* perl-Class-Inspector
 * perl-aliased
 * perl-bareword-filehandles
 
