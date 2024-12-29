@@ -65,6 +65,7 @@ Currently assigned packages:
 * perl-Capture-Tiny
 * perl-Carp-Clan
 * perl-Class-ErrorHandler
+* perl-Class-ISA
 * perl-aliased
 * perl-bareword-filehandles
 
