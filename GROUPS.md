@@ -62,6 +62,7 @@ Currently assigned packages:
 * perl-Business-ISBN
 * perl-Bytes-Random-Secure
 * perl-aliased
+* perl-bareword-filehandles
 
 
 ### Perl/Network

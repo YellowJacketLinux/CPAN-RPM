@@ -2,35 +2,44 @@
 
 Name:     perl-%{cpanname}
 Version:  0.007
-Release:  %{?repo}0.rc1%{?dist}
+Release:  %{?repo}0.rc2%{?dist}
 Summary:  Disables bareword filehandles
 
-Group:    System Environment/Libraries
-License:  GPL-1.0-or-later or Artistic-1.0-Perl
+Group:    Perl/Libraries
+License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/I/IL/ILMARI/%{cpanname}-%{version}.tar.gz
 
+BuildRequires: perl(:VERSION) >= 5.8.1
 BuildRequires: perl-devel
 BuildRequires: perl(ExtUtils::MakeMaker)
+#
 BuildRequires: perl(B::Hooks::OP::Check)
 BuildRequires: perl(File::Spec)
 BuildRequires: perl(Test::More) >= 0.88
 BuildRequires: perl(XSLoader)
 BuildRequires: perl(if)
+BuildRequires: perl(strict)
+BuildRequires: perl(warnings)
+#
 %if 0%{?perl5_ABI:1} == 1
-Requires: %{perl5_ABI}
+Requires: %{perl5_ABI} >= 5.8.1
+%else
+Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+Requires: %{perl5_vendorarch}
 %endif
 Requires: perl(B::Hooks::OP::Check)
 Requires: perl(XSLoader)
 Requires: perl(if)
 Requires: perl(strict)
 Requires: perl(warnings)
+#
 Provides: perl(bareword::filehandles) = %{version}
 
 %description
 This module lexically disables the use of bareword filehandles
 with builtin functions, except for the special builtin filehandles
-'STDIN', 'STDOUT', 'STDERR', 'ARGV', 'ARGVOUT' and 'DATA'.
+`STDIN`, `STDOUT`, `STDERR`, `ARGV`, `ARGVOUT`, and `DATA`.
 
 
 %prep
@@ -71,5 +80,8 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
+* Sat Dec 28 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.007-0.rc2
+- Spec file cleanup
+
 * Mon Nov 18 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.007-0.rc1
 - Initial spec file for YJL 6.6 (LFS 12.2 based)
