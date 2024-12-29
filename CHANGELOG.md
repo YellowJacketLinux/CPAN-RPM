@@ -1,3 +1,19 @@
+Sun Dec 29 ~ 09:50:00 PST 2024
+------------------------------
+
+Added to Incoming:
+
+* perl-Class-ErrorHandler (0.04-0.rc1)
+* perl-Class-InsideOut (1.14-0.rc1)
+* perl-Class-Inspector (1.36--0.rc1)
+* perl-Class-ISA (0.36-0.rc1)
+* perl-Class-Loader (2.03-0.rc1)
+* perl-Class-Method-Modifiers (2.15-0.rc1)
+* perl-Class-Plain (0.06-0.rc2)
+* perl-Class-Prototyped (1.16-0.rc1)
+* perl-Class-Tiny (1.008-0.rc1)
+* perl-Class-XSAccessor (1.19-0,rc1)
+
 Sun Dec 29 ~ 09:30:00 PST 2024
 ------------------------------
 
