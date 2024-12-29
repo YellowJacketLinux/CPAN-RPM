@@ -44,6 +44,7 @@ CPAN distributions related to installing CPAN distributions.
 Currently assigned packages:
 
 * perl-Alien-Build
+* perl-Canary-Stability
 
 
 ### Perl/Libraries
@@ -61,7 +62,10 @@ Currently assigned packages:
 * perl-B-Hooks-OP-Check
 * perl-Business-ISBN
 * perl-Bytes-Random-Secure
+* perl-Capture-Tiny
+* perl-Carp-Clan
 * perl-aliased
+* perl-bareword-filehandles
 
 
 ### Perl/Network
