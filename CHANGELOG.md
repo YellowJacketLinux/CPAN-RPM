@@ -1,3 +1,13 @@
+Sat Dec 28 ~ 18:24:00 PST 2024
+------------------------------
+
+Added to Incoming:
+
+* perl-bareword-filehandles (0.007-0.rc1)
+* perl-Canary-Stability (2013-0.rc1)
+* perl-Capture-Tiny (0.48-0.rc1)
+* perl-Carp-Clan (6.08-0.rc1)
+
 Sat Dec 28 ~ 16:50:00 PST 2024
 ------------------------------
 
