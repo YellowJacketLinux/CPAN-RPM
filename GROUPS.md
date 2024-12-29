@@ -63,6 +63,7 @@ Currently assigned packages:
 * perl-Business-ISBN
 * perl-Bytes-Random-Secure
 * perl-Capture-Tiny
+* perl-Carp-Clan
 * perl-aliased
 * perl-bareword-filehandles
 

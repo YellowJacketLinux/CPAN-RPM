@@ -80,7 +80,7 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
-* Sat Dec 28 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.007-0.rc2
+* Sun Dec 29 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.007-0.rc2
 - Spec file cleanup
 
 * Mon Nov 18 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.007-0.rc1

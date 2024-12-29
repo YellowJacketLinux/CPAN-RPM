@@ -2,26 +2,35 @@
 
 Name:     perl-%{cpanname}
 Version:  6.08
-Release:  %{?repo}0.rc1%{?dist}
+Release:  %{?repo}0.rc2%{?dist}
 Summary:  Report errors from perspective of caller of a "clan" of modules
 BuildArch: noarch
 
-Group:    System Environment/Libraries
-License:  GPL-1.0-or-later or Artistic-1.0-Perl
+Group:    Perl/Libraries
+License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/E/ET/ETHER/%{cpanname}-%{version}.tar.gz
 
+BuildRequires: perl(:VERSION) >= 5.6.0
 BuildRequires: perl-devel
 BuildRequires: perl(ExtUtils::MakeMaker)
+#
 BuildRequires: perl(CPAN::Meta) >= 2.120900
 BuildRequires: perl(File::Spec)
 BuildRequires: perl(Test::More)
 BuildRequires: perl(overload)
+BuildRequires: perl(strict)
+BuildRequires: perl(warnings)
+#
 %if 0%{?perl5_API:1} == 1
-Requires: %{perl5_API}
+Requires: %{perl5_API} >= 5.6.0
+%else
+Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+Requires: %{perl5_vendorlib}
 %endif
 Requires: perl(overload)
 Requires: perl(strict)
+#
 Provides: perl(Carp::Clan) = %{version}
 
 %description
@@ -40,8 +49,7 @@ BUILDING_AS_PACKAGE=1   \
 perl Makefile.PL        \
      INSTALLDIRS=vendor \
      NO_PACKLIST=1      \
-     NO_PERLLOCAL=1     \
-     OPTIMIZE="$RPM_OPT_FLAGS"
+     NO_PERLLOCAL=1
 make %{?_smp_mflags}
 
 
@@ -65,5 +73,8 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
+* Sun Dec 29 2024 Michael A. Peters <anymouseprophet@gmail.com> - 6.08-0.rc2
+- Spec file cleanup
+
 * Mon Nov 25 2024 Michael A. Peters <anymouseprophet@gmail.com> - 6.08-0.rc1
 - Initial spec file for YJL 6.6 (LFS 12.2 based)
