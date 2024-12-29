@@ -9,7 +9,7 @@ BuildArch: noarch
 Group:    Perl/Libraries
 License:  Apache-2.0
 URL:      https://metacpan.org/dist/%{cpanname}
-Source0:  https://cpan.metacpan.org/authors/id/D/DA/DAGOLDEN/Capture-Tiny-0.48.tar.gz
+Source0:  https://cpan.metacpan.org/authors/id/D/DA/DAGOLDEN/%{cpanname}-%{version}.tar.gz
 
 BuildRequires: perl(:VERSION) >= 5.6.0
 BuildRequires: perl-devel
@@ -44,7 +44,7 @@ Requires: perl(Scalar::Util)
 Requires: perl(Time::HiRes)
 Requires: perl(strict)
 Requires: perl(warnings)
-Provides: perl(Capture::Tiny) = 0.48
+Provides: perl(Capture::Tiny) = %{version}
 
 %description
 `Capture::Tiny` provides a simple, portable way to capture almost
