@@ -96,8 +96,7 @@ BUILDING_AS_PACKAGE=1   \
 perl Makefile.PL        \
      INSTALLDIRS=vendor \
      NO_PACKLIST=1      \
-     NO_PERLLOCAL=1     \
-     OPTIMIZE="$RPM_OPT_FLAGS"
+     NO_PERLLOCAL=1
 make %{?_smp_mflags}
 
 
