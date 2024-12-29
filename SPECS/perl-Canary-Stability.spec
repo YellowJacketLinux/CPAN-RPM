@@ -2,21 +2,26 @@
 
 Name:     perl-%{cpanname}
 Version:  2013
-Release:  %{?repo}0.rc1%{?dist}
-Summary:  Canary to check perl compatibility for schmorp's modules
+Release:  %{?repo}0.rc2%{?dist}
+Summary:  Canary to check perl compatibility for Schmorp's modules
 BuildArch: noarch
 
-Group:    Development/Libraries
-License:  GPL-1.0-or-later or Artistic-1.0-Perl
+Group:    Perl/Installer-Tools
+License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/M/ML/MLEHMANN/%{cpanname}-%{version}.tar.gz
-Source90: PERL-Artistic
-Source91: PERL-Copying
+Source90: Artistic-1.0-Perl.txt
+Source91: GPL-1.0.txt
 
+BuildRequires: perl(:VERSION) >= 5.8.2
 BuildRequires: perl-devel
 BuildRequires: perl(ExtUtils::MakeMaker)
+#
 %if 0%{?perl5_API:1} == 1
-Requires: %{perl5_API}
+Requires: %{perl5_API} >= 5.8.2
+%else
+Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+Requires: %{perl5_vendorlib}
 %endif
 Requires: perl(ExtUtils::MakeMaker)
 Provides: perl(Canary::Stability) = %{version}
@@ -36,8 +41,7 @@ BUILDING_AS_PACKAGE=1   \
 perl Makefile.PL        \
      INSTALLDIRS=vendor \
      NO_PACKLIST=1      \
-     NO_PERLLOCAL=1     \
-     OPTIMIZE="$RPM_OPT_FLAGS"
+     NO_PERLLOCAL=1
 make %{?_smp_mflags}
 
 
@@ -54,12 +58,14 @@ make test > %{name}-make.test.log 2>&1
 %dir %{perl5_vendorlib}/Canary
 %{perl5_vendorlib}/Canary/Stability.pm
 %attr(0644,root,root) %{_mandir}/man3/Canary::Stability.3*
-%license COPYING PERL-Artistic PERL-Copying
+%license COPYING Artistic-1.0-Perl.txt GPL-1.0.txt
 %doc %{name}-make.test.log
-%doc COPYING PERL-Artistic PERL-Copying
-%doc Changes README
+%doc COPYING Changes README
 
 
 %changelog
+* Sat Dec 28 2024 Michael A. Peters <anymouseprophet@gmail.com> - 2013-0.rc2
+- Spec file cleanup
+
 * Thu Nov 14 2024 Michael A. Peters <anymouseprophet@gmail.com> - 2013-0.rc1
 - Initial spec file for YJL 6.6 (LFS 12.2 based)

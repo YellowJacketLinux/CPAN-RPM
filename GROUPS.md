@@ -44,6 +44,7 @@ CPAN distributions related to installing CPAN distributions.
 Currently assigned packages:
 
 * perl-Alien-Build
+* perl-Canary-Stability
 
 
 ### Perl/Libraries
