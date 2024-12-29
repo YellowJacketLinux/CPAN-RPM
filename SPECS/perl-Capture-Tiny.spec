@@ -1,18 +1,20 @@
 %global cpanname Capture-Tiny
 
 Name:     perl-%{cpanname}
-Version:  0.48
+Version:  0.50
 Release:  %{?repo}0.rc1%{?dist}
 Summary:  Capture STDOUT and STDERR from Perl, XS or external programs
 BuildArch: noarch
 
-Group:    System Environment/Libraries
+Group:    Perl/Libraries
 License:  Apache-2.0
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/D/DA/DAGOLDEN/Capture-Tiny-0.48.tar.gz
 
+BuildRequires: perl(:VERSION) >= 5.6.0
 BuildRequires: perl-devel
-BuildRequires: perl(ExtUtils::MakeMaker)
+BuildRequires: perl(ExtUtils::MakeMaker) >= 6.17
+#
 BuildRequires: perl(Carp)
 BuildRequires: perl(CPAN::Meta) >= 2.120900
 BuildRequires: perl(Exporter)
@@ -23,8 +25,13 @@ BuildRequires: perl(IO::Handle)
 BuildRequires: perl(Scalar::Util)
 BuildRequires: perl(Test::More) >= 0.62
 BuildRequires: perl(lib)
+BuildRequires: perl(strict)
+BuildRequires: perl(warnings)
 %if 0%{?perl5_API:1} == 1
-Requires: %{perl5_API}
+Requires: %{perl5_API} >= 5.6.0
+%else
+Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+Requires: %{perl5_vendorlib}
 %endif
 Requires: perl(Carp)
 Requires: perl(Exporter)
@@ -40,13 +47,13 @@ Requires: perl(warnings)
 Provides: perl(Capture::Tiny) = 0.48
 
 %description
-Capture::Tiny provides a simple, portable way to capture almost
-anything sent to STDOUT or STDERR, regardless of whether it comes
-from Perl, from XS code or from an external program. Optionally,
-output can be teed so that it is captured while being passed
-through to the original filehandles. Yes, it even works on Windows
-(usually). Stop guessing which of a dozen capturing modules to use
-in any particular situation and just use this one.
+`Capture::Tiny` provides a simple, portable way to capture almost
+anything sent to `STDOUT` or `STDERR`, regardless of whether it
+comes from Perl, from XS code or from an external program.
+Optionally, output can be teed so that it is captured while being
+passed through to the original filehandles. Yes, it even works on
+Windows (usually). Stop guessing which of a dozen capturing
+modules to use in any particular situation and just use this one.
 
 
 %prep
@@ -59,8 +66,7 @@ BUILDING_AS_PACKAGE=1   \
 perl Makefile.PL        \
      INSTALLDIRS=vendor \
      NO_PACKLIST=1      \
-     NO_PERLLOCAL=1     \
-     OPTIMIZE="$RPM_OPT_FLAGS"
+     NO_PERLLOCAL=1
 make %{?_smp_mflags}
 
 
@@ -84,5 +90,8 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
+* Sat Dec 28 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.50-0.rc1
+- Update to 0.50, spec file cleanup
+
 * Sun Nov 17 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.48-0.rc1
 - Initial spec file for YJL 6.6 (LFS 12.2 based)

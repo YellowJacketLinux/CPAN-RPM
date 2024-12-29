@@ -62,6 +62,7 @@ Currently assigned packages:
 * perl-B-Hooks-OP-Check
 * perl-Business-ISBN
 * perl-Bytes-Random-Secure
+* perl-Capture-Tiny
 * perl-aliased
 * perl-bareword-filehandles
 
