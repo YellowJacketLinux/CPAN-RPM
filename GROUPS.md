@@ -64,6 +64,7 @@ Currently assigned packages:
 * perl-Bytes-Random-Secure
 * perl-Capture-Tiny
 * perl-Carp-Clan
+* perl-Class-ErrorHandler
 * perl-aliased
 * perl-bareword-filehandles
 

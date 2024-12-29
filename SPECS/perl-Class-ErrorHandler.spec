@@ -2,27 +2,34 @@
 
 Name:     perl-%{cpanname}
 Version:  0.04
-Release:  %{?repo}0.rc1%{?dist}
+Release:  %{?repo}0.rc2%{?dist}
 Summary:  Base class for error handling
 BuildArch: noarch
 
-Group:    System Environment/Libraries
-License:  GPL-1.0-or-later or Artistic-1.0-Perl
+Group:    Perl/Libraries
+License:  Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/T/TO/TOKUHIROM/%{cpanname}-%{version}.tar.gz
 
+BuildRequires: perl(:VERSION) >= 5.8.1
 BuildRequires: perl-devel
 BuildRequires: perl(ExtUtils::MakeMaker)
+BuildRequires: perl(strict)
 BuildRequires: perl(vars)
+#
 %if 0%{?perl5_API:1} == 1
-Requires: %{perl5_API}
+Requires: %{perl5_API} >= 5.8.1
+%else
+Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+Requires: %{perl5_vendorlib}
 %endif
 Requires: perl(strict)
 Requires: perl(vars)
+#
 Provides: perl(Class::ErrorHandler) = %{version}
 
 %description
-'Class::ErrorHandler' provides an error-handling mechanism that
+`Class::ErrorHandler` provides an error-handling mechanism that
 is generic enough to be used as the base class for a variety of
 Object Oriented classes.
 
@@ -37,8 +44,7 @@ BUILDING_AS_PACKAGE=1   \
 perl Makefile.PL        \
      INSTALLDIRS=vendor \
      NO_PACKLIST=1      \
-     NO_PERLLOCAL=1     \
-     OPTIMIZE="$RPM_OPT_FLAGS"
+     NO_PERLLOCAL=1
 make %{?_smp_mflags}
 
 
@@ -62,5 +68,8 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
+* Sun Dec 29 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.04-0.rc2
+- Spec file cleanup
+
 * Sun Dec 01 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.04-0.rc1
 - Initial spec file for YJL 6.6 (LFS 12.2 based)
