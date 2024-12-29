@@ -66,6 +66,7 @@ Currently assigned packages:
 * perl-Carp-Clan
 * perl-Class-ErrorHandler
 * perl-Class-ISA
+* perl-Class-InsideOut
 * perl-aliased
 * perl-bareword-filehandles
 

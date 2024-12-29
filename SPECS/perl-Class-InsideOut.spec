@@ -2,17 +2,19 @@
 
 Name:     perl-%{cpanname}
 Version:  1.14
-Release:  %{?repo}0.rc1%{?dist}
+Release:  %{?repo}0.rc2%{?dist}
 Summary:  A safe, simple inside-out object construction kit
 BuildArch: noarch
 
-Group:    System Environment/Libraries
+Group:    Perl/Libraries
 License:  Apache-2.0
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/D/DA/DAGOLDEN/%{cpanname}-%{version}.tar.gz
 
+BuildRequires: perl(:VERSION) >= 5.8.0
 BuildRequires: perl-devel
-BuildRequires: perl(ExtUtils::MakeMaker)
+BuildRequires: perl(ExtUtils::MakeMaker) >= 6.17
+#
 BuildRequires: perl(CPAN::Meta) >= 2.120900
 BuildRequires: perl(Carp)
 BuildRequires: perl(Class::ISA)
@@ -28,9 +30,14 @@ BuildRequires: perl(XSLoader)
 BuildRequires: perl(lib)
 BuildRequires: perl(threads)
 BuildRequires: perl(overload)
+BuildRequires: perl(strict)
 BuildRequires: perl(vars)
+BuildRequires: perl(warnings)
 %if 0%{?perl5_API:1} == 1
-Requires: %{perl5_API}
+Requires: %{perl5_API} >= 5.8.0
+%else
+Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+Requires: %{perl5_vendorlib}
 %endif
 Requires: perl(Carp)
 Requires: perl(Class::ISA)
@@ -40,6 +47,7 @@ Requires: perl(Storable)
 Requires: perl(overload)
 Requires: perl(strict)
 Requires: perl(vars)
+#
 Provides: perl(Class::InsideOut) = %{version}
 
 %description
@@ -57,8 +65,7 @@ BUILDING_AS_PACKAGE=1   \
 perl Makefile.PL        \
      INSTALLDIRS=vendor \
      NO_PACKLIST=1      \
-     NO_PERLLOCAL=1     \
-     OPTIMIZE="$RPM_OPT_FLAGS"
+     NO_PERLLOCAL=1
 make %{?_smp_mflags}
 
 
@@ -85,5 +92,8 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
+* Sun Dec 29 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.14-0.rc2
+- Spec file cleanup
+
 * Tue Nov 26 2024 Michael A. Peters <anymouseprophet@gmail.com> - 1.14-0.rc1
 - Initial spec file for YJL 6.6 (LFS 12.2 based)
