@@ -73,6 +73,7 @@ Currently assigned packages:
 * perl-Class-Plain
 * perl-Class-Prototyped
 * perl-Class-Tiny
+* perl-Class-XSAccessor
 * perl-aliased
 * perl-bareword-filehandles
 
