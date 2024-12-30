@@ -71,6 +71,7 @@ Currently assigned packages:
 * perl-Class-Loader
 * perl-Class-Method-Modifiers
 * perl-Class-Plain
+* perl-Class-Prototyped
 * perl-aliased
 * perl-bareword-filehandles
 
