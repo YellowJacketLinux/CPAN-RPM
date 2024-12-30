@@ -10,6 +10,8 @@ Group:    Perl/Development
 License:  Artistic-1.0-Per or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/%{cpanname}-%{version}.tar.gz
+Source90: Artistic-1.0-Perl.txt
+Source99: CPAN-LICENSE-AMBIGUITY.md
 
 BuildRequires: perl(:VERSION) >= 5.8.1
 BuildRequires: perl-devel
@@ -112,6 +114,8 @@ customized and handle a number of corner cases better.
 
 %prep
 %setup -q -n %{cpanname}-%{version}
+cp %{SOURCE90} .
+cp %{SOURCE99} .
 
 
 %build
@@ -141,7 +145,7 @@ find %{buildroot} -type f -name .packlist -delete
 %{perl5_vendorlib}/Alien/Base/ModuleBuild/*.pod
 %{perl5_vendorlib}/Alien/Base/ModuleBuild/Repository/*.pm
 %attr(0644,root,root) %{_mandir}/man3/*.3*
-%license LICENSE
+%license LICENSE Artistic-1.0-Perl.txt CPAN-LICENSE-AMBIGUITY.md
 %doc %{name}-make.test.log
 %doc LICENSE Changes README
 
