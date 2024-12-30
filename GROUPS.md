@@ -70,6 +70,7 @@ Currently assigned packages:
 * perl-Class-Inspector
 * perl-Class-Loader
 * perl-Class-Method-Modifiers
+* perl-Class-Plain
 * perl-aliased
 * perl-bareword-filehandles
 

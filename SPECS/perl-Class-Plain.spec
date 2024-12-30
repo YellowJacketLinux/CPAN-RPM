@@ -2,16 +2,20 @@
 
 Name:     perl-%{cpanname}
 Version:  0.06
-Release:  %{?repo}0.rc2%{?dist}
+Release:  %{?repo}0.rc3%{?dist}
 Summary:  A class syntax for the hash-based Perl OO
 
-Group:    System Environment/Libraries
-License:  GPL-1.0-or-later or Artistic-1.0-Perl
+Group:    Perl/Libraries
+License:  Artistic-1.0 or Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/K/KI/KIMOTO/%{cpanname}-%{version}.tar.gz
+Source90: Artistic-1.0-Perl.txt
+Source99: CPAN-LICENSE-AMBIGUITY.md
 
+BuildRequires: perl(:VERSION) >= 5.16.0
 BuildRequires: perl-devel
-BuildRequires: perl(Module::Build)
+BuildRequires: perl(Module::Build) >= 0.4004
+#
 BuildRequires: perl(Carp)
 BuildRequires: perl(DynaLoader)
 BuildRequires: perl(File::ShareDir)
@@ -23,8 +27,13 @@ BuildRequires: perl(XS::Parse::Keyword::Builder) >= 0.22
 BuildRequires: perl(XS::Parse::Sublike) >= 0.15
 BuildRequires: perl(XS::Parse::Sublike::Builder) >= 0.15
 BuildRequires: perl(mro)
+BuildRequires: perl(strict)
+BuildRequires: perl(warnings)
 %if 0%{?perl5_ABI:1} == 1
-Requires: %{perl5_ABI}
+Requires: %{perl5_ABI} >= 5.16.0
+%else
+Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
+Requires: %{perl5_vendorarch}
 %endif
 Requires: perl(Carp)
 Requires: perl(DynaLoader)
@@ -35,6 +44,7 @@ Requires: perl(XS::Parse::Sublike) >= 0.15
 Requires: perl(mro)
 Requires: perl(strict)
 Requires: perl(warnings)
+#
 Provides: perl(Class::Plain) = %{version}
 Provides: perl(Class::Plain::Base)
 
@@ -44,7 +54,8 @@ This module provides a class syntax for the hash-based Perl OO.
 
 %prep
 %setup -q -n %{cpanname}-%{version}
-
+cp %{SOURCE90} .
+cp %{SOURCE99} .
 
 %build
 PERL_MM_USE_DEFAULT=1   \
@@ -75,13 +86,16 @@ find %{buildroot} -type f -name .packlist -delete
 %attr(0555,root,root) %{perl5_vendorarch}/auto/Class/Plain/Plain.so
 %exclude %{perl5_vendorarch}/auto/Class/Plain/Plain.bs
 %attr(0644,root,root) %{_mandir}/man3/*.3*
-%license LICENSE
+%license LICENSE Artistic-1.0-Perl.txt CPAN-LICENSE-AMBIGUITY.md
 %doc %{name}-make.test.log
 %doc LICENSE Changes README*
 
 
 
 %changelog
+* Mon Dec 30 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.06-0.rc3
+- Spec file cleanup, license cleanup
+
 * Wed Nov 27 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.06-0.rc2
 - remove .packlist during %%install, exclude .bs file
 
