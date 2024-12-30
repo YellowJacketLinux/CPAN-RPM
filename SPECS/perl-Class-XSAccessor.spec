@@ -37,7 +37,7 @@ Provides: perl(Class::XSAccessor::Array) = %{version}
 Provides: perl(Class::XSAccessor::Heavy) = %{version}
 
 %description
-Class::XSAccessor implements fast read, write and read/write
+`Class::XSAccessor` implements fast read, write and read/write
 accessors in XS.
 
 
