@@ -29,15 +29,15 @@ Perl 5 Terms
 
 Many CPAN modules include text similar to the following:
 
-> This is free software; you can redistribute it and/or modify it under
-> the same terms as the Perl 5 programming language system itself.
-> 
-> Terms of the Perl programming language system itself
-> 
-> a) the GNU General Public License as published by the Free
->    Software Foundation; either version 1, or (at your option) any
->    later version, or
-> b) the "Artistic License"
+    > This is free software; you can redistribute it and/or modify it under
+    > the same terms as the Perl 5 programming language system itself.
+    > 
+    > Terms of the Perl programming language system itself
+    > 
+    > a) the GNU General Public License as published by the Free
+    >    Software Foundation; either version 1, or (at your option) any
+    >    later version, or
+    > b) the "Artistic License"
 
 This *should* translate to SPDX identifiers of ‘GPL-1.0-or-later’ (for case
 `a)`) and ‘Artistic-1.0-Perl’ (for case `b)`) as those SPDX identifiers are
@@ -113,4 +113,4 @@ included with the CPAN distribution, so that is the SPDX identifier we use in
 these common cases.
 
 
-EOF
+__EOF__
