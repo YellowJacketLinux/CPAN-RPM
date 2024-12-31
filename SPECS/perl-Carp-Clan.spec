@@ -7,9 +7,11 @@ Summary:  Report errors from perspective of caller of a "clan" of modules
 BuildArch: noarch
 
 Group:    Perl/Libraries
-License:  Artistic-1.0-Perl or GPL-1.0-or-later
+License:  Artistic-1.0 or Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/E/ET/ETHER/%{cpanname}-%{version}.tar.gz
+Source90: Artistic-1.0-Perl.txt
+Source99: CPAN-LICENSE-AMBIGUITY.md
 
 BuildRequires: perl(:VERSION) >= 5.6.0
 BuildRequires: perl-devel
@@ -41,6 +43,8 @@ the "use" statement inside the "qw()" term (or argument list).
 
 %prep
 %setup -q -n %{cpanname}-%{version}
+cp %{SOURCE90} .
+cp %{SOURCE99} .
 
 
 %build
@@ -66,7 +70,7 @@ make test > %{name}-make.test.log 2>&1
 %dir %{perl5_vendorlib}/Carp
 %{perl5_vendorlib}/Carp/Clan.pm
 %attr(0644,root,root) %{_mandir}/man3/Carp::Clan.3*
-%license LICENSE
+%license LICENSE Artistic-1.0-Perl.txt CPAN-LICENSE-AMBIGUITY.md
 %doc %{name}-make.test.log
 %doc LICENSE Changes CONTRIBUTING README
 
