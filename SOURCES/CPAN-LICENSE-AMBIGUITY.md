@@ -20,8 +20,14 @@ primarily caused by bugs in software meant to automate the generation of LICENSE
 files as the ambiguities tend to be identical across many different CPAN
 distributions by different authors/maintainers.
 
-Most of the ambiguities occur in cases where a `LICENSE` file exists that
-specifies ‘Perl 5 Terms’ but then includes text that differ from ‘Perl 5 Terms’.
+Most of the ambiguities occur in cases where a `LICENSE` (or `LICENCE`) file
+exists in the CPAN source that specifies ‘Perl 5 Terms’ but then includes text
+of licenses that differ from ‘Perl 5 Terms’ licenses.
+
+Some of the time, seemingly less than half, a `LICENSE` (or `LICENCE`) file
+exists in the CPAN source that specifies ‘Perl 5 Terms’ and includes text that
+does match the ‘Perl 5 Terms’ licenses. In those cases, there is no ambiguity.
+
 
 
 Perl 5 Terms
@@ -48,7 +54,10 @@ license text, I feel comfortable specifying ‘Artistic-1.0-Perl’ and
 ‘GPL-1.0-or-later’ as SPDX dual-license terms, and including the text files
 that correspond with those SPDX identifiers.
 
-Unfortunately CPAN modules often do include license text that differ.
+When a CPAN distribution identifies ‘Perl 5 Terms’ and then includes license
+terms that differ, I feel it necessary to include this file and use SPDX
+identifiers that reflect the included license, sometimes also including the
+text of the ‘Artistic-1.0-Perl’ in a separate file.
 
 
 Artistic 1.0
@@ -70,11 +79,10 @@ Jacket GNU/Linux does not have the authority to clarify the situation.
 
 YJL RPM spec files will specify both ‘Artistic-1.0’ and ‘Artistic-1.0-Perl’ as
 SPDX identifiers as an argument can be made for either case. The original
-‘Artistic-1.0’ is included (usually within a file called `ARTISTIC` or
-`LICENSE` or `COPYING`) packaged with both the RPM `%license` and `%doc` macros
-and the text of the ‘Artistic-1.0-Perl’ is included in a file called
-`Artistic-1.0-Perl.txt` but is only packaged with the RPM `%license` macro as
-it is not part of the original CPAN source distribution.
+`LICENSE` (or `LICENCE`) filr is packaged in the RPM with both the RPM
+`%license` and `%doc` macros and the text of the ‘Artistic-1.0-Perl’ is included
+in a file called `Artistic-1.0-Perl.txt` but is only packaged with the RPM
+`%license` macro as it is not part of the original CPAN source distribution.
 
 ### ‘Artistic-1.0’ vs ‘Artistic-1.0-Perl’
 
