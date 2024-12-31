@@ -6,9 +6,11 @@ Release:  %{?repo}0.rc2%{?dist}
 Summary:  Wrap OP check callbacks
 
 Group:    Perl/Libraries
-License:  Artistic-1.0-Perl or GPL-1.0-or-later
+License:  Artistic-1.0 or Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/E/ET/ETHER/%{cpanname}-%{version}.tar.gz
+Source90: Artistic-1.0-Perl.txt
+Source99: CPAN-LICENSE-AMBIGUITY.md
 
 BuildRequires: perl(:VERSION) >= 5.8.1
 BuildRequires: perl-devel
@@ -46,6 +48,8 @@ XS modules to use.
 
 %prep
 %setup -q -n %{cpanname}-%{version}
+cp %{SOURCE90} .
+cp %{SOURCE99} .
 
 
 %build
@@ -83,7 +87,7 @@ make test > %{name}-make.test.log 2>&1
 %{perl5_vendorlib}/B/Hooks/OP/Check/Install/hook_op_check.h
 %attr(0555,root,root) %{perl5_vendorlib}/auto/B/Hooks/OP/Check/Check.so
 %attr(0644,root,root) %{_mandir}/man3/*.3*
-%license LICENCE
+%license LICENCE Artistic-1.0-Perl.txt CPAN-LICENSE-AMBIGUITY.md
 %doc %{name}-make.test.log
 %doc LICENCE Changes CONTRIBUTING README
 
