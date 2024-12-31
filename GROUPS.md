@@ -64,6 +64,16 @@ Currently assigned packages:
 * perl-Bytes-Random-Secure
 * perl-Capture-Tiny
 * perl-Carp-Clan
+* perl-Class-ErrorHandler
+* perl-Class-ISA
+* perl-Class-InsideOut
+* perl-Class-Inspector
+* perl-Class-Loader
+* perl-Class-Method-Modifiers
+* perl-Class-Plain
+* perl-Class-Prototyped
+* perl-Class-Tiny
+* perl-Class-XSAccessor
 * perl-aliased
 * perl-bareword-filehandles
 

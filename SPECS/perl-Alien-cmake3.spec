@@ -7,9 +7,11 @@ Summary:  Alien package for CMake 3 or better
 BuildArch: noarch
 
 Group:    Perl/Development
-License:  Artistic-1.0-Perl or GPL-1.0-or-later
+License:  Artistic-1.0 or Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/%{cpanname}-%{version}.tar.gz
+Source90: Artistic-1.0-Perl.txt
+Source99: CPAN-LICENSE-AMBIGUITY.md
 
 BuildRequires: cmake >= 3.0.0
 #
@@ -52,6 +54,8 @@ on the common build tool `cmake` version 3.0.0 or better is met.
 
 %prep
 %setup -q -n %{cpanname}-%{version}
+cp %{SOURCE90} .
+cp %{SOURCE99} .
 
 
 %build
@@ -86,7 +90,7 @@ make test > %{name}-make.test.log 2>&1
 %{perl5_vendorlib}/auto/share/dist/Alien-cmake3/_alien/alien.json
 %{perl5_vendorlib}/auto/share/dist/Alien-cmake3/_alien/alienfile
 %attr(0644,root,root) %{_mandir}/man3/Alien::cmake3.3*
-%license LICENSE
+%license LICENSE Artistic-1.0-Perl.txt CPAN-LICENSE-AMBIGUITY.md
 %doc %{name}-make.test.log
 %doc LICENSE Changes README
 

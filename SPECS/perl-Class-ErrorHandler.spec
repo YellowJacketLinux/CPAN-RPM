@@ -1,44 +1,39 @@
-%global cpanname Carp-Clan
+%global cpanname Class-ErrorHandler
 
 Name:     perl-%{cpanname}
-Version:  6.08
+Version:  0.04
 Release:  %{?repo}0.rc2%{?dist}
-Summary:  Report errors from perspective of caller of a "clan" of modules
+Summary:  Base class for error handling
 BuildArch: noarch
 
 Group:    Perl/Libraries
 License:  Artistic-1.0 or Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
-Source0:  https://cpan.metacpan.org/authors/id/E/ET/ETHER/%{cpanname}-%{version}.tar.gz
+Source0:  https://cpan.metacpan.org/authors/id/T/TO/TOKUHIROM/%{cpanname}-%{version}.tar.gz
 Source90: Artistic-1.0-Perl.txt
 Source99: CPAN-LICENSE-AMBIGUITY.md
 
-BuildRequires: perl(:VERSION) >= 5.6.0
+BuildRequires: perl(:VERSION) >= 5.8.1
 BuildRequires: perl-devel
 BuildRequires: perl(ExtUtils::MakeMaker)
-#
-BuildRequires: perl(CPAN::Meta) >= 2.120900
-BuildRequires: perl(File::Spec)
-BuildRequires: perl(Test::More)
-BuildRequires: perl(overload)
 BuildRequires: perl(strict)
-BuildRequires: perl(warnings)
+BuildRequires: perl(vars)
 #
 %if 0%{?perl5_API:1} == 1
-Requires: %{perl5_API} >= 5.6.0
+Requires: %{perl5_API} >= 5.8.1
 %else
 Requires: perl(:MODULE_COMPAT_%(eval `perl -V:version`; echo $version))
 Requires: %{perl5_vendorlib}
 %endif
-Requires: perl(overload)
 Requires: perl(strict)
+Requires: perl(vars)
 #
-Provides: perl(Carp::Clan) = %{version}
+Provides: perl(Class::ErrorHandler) = %{version}
 
 %description
-This module is based on "Carp.pm" from Perl 5.005_03. It has been
-modified to skip all package names matching the pattern given in
-the "use" statement inside the "qw()" term (or argument list).
+`Class::ErrorHandler` provides an error-handling mechanism that
+is generic enough to be used as the base class for a variety of
+Object Oriented classes.
 
 
 %prep
@@ -67,18 +62,18 @@ make test > %{name}-make.test.log 2>&1
 
 %files
 %defattr(0444,root,root,-)
-%dir %{perl5_vendorlib}/Carp
-%{perl5_vendorlib}/Carp/Clan.pm
-%attr(0644,root,root) %{_mandir}/man3/Carp::Clan.3*
+%dir %{perl5_vendorlib}/Class
+%{perl5_vendorlib}/Class/ErrorHandler.pm
+%attr(0644,root,root) %{_mandir}/man3/Class::ErrorHandler.3*
 %license LICENSE Artistic-1.0-Perl.txt CPAN-LICENSE-AMBIGUITY.md
 %doc %{name}-make.test.log
-%doc LICENSE Changes CONTRIBUTING README
+%doc LICENSE Changes README.md
 
 
 
 %changelog
-* Sun Dec 29 2024 Michael A. Peters <anymouseprophet@gmail.com> - 6.08-0.rc2
+* Mon Dec 30 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.04-0.rc2
 - Spec file cleanup
 
-* Mon Nov 25 2024 Michael A. Peters <anymouseprophet@gmail.com> - 6.08-0.rc1
+* Sun Dec 01 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.04-0.rc1
 - Initial spec file for YJL 6.6 (LFS 12.2 based)

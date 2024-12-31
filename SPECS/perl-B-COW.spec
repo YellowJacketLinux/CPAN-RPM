@@ -6,9 +6,11 @@ Release:  %{?repo}0.rc2%{?dist}
 Summary:  Additional B helpers to check COW status
 
 Group:    Perl/Libraries
-License:  Artistic-1.0-Perl or GPL-1.0-or-later
+License:  Artistic-1.0 or Artistic-1.0-Perl or GPL-1.0-or-later
 URL:      https://metacpan.org/dist/%{cpanname}
 Source0:  https://cpan.metacpan.org/authors/id/A/AT/ATOOMIC/%{cpanname}-%{version}.tar.gz
+Source90: Artistic-1.0-Perl.txt
+Source99: CPAN-LICENSE-AMBIGUITY.md
 
 BuildRequires: perl(:VERSION) >= 5.8.0
 BuildRequires: perl-devel
@@ -44,6 +46,8 @@ Provides: perl(B::COW) = %{version}
 
 %prep
 %setup -q -n %{cpanname}-%{version}
+cp %{SOURCE90} .
+cp %{SOURCE99} .
 
 
 %build
@@ -73,7 +77,7 @@ make test > %{name}-make.test.log 2>&1
 %{perl5_vendorarch}/B/COW.pm
 %attr(0555,root,root) %{perl5_vendorarch}/auto/B/COW/COW.so
 %attr(0644,root,root) %{_mandir}/man3/B::COW.3*
-%license LICENSE
+%license LICENSE Artistic-1.0-Perl.txt CPAN-LICENSE-AMBIGUITY.md
 %doc %{name}-make.test.log
 %doc LICENSE Changes README examples
 
