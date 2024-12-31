@@ -102,7 +102,7 @@ make test > %{name}-make.test.log 2>&1
 
 
 %changelog
-* Sun Dec 29 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.36-0.rc2
+* Mon Dec 30 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.36-0.rc2
 - Spec file and license cleanup
 
 * Sat Nov 23 2024 Michael A. Peters <anymouseprophet@gmail.com> - 0.36-0.rc1
