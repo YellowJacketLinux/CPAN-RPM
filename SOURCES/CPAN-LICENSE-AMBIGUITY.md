@@ -76,9 +76,45 @@ and the text of the ‘Artistic-1.0-Perl’ is included in a file called
 `Artistic-1.0-Perl.txt` but is only packaged with the RPM `%license` macro as
 it is not part of the original CPAN source distribution.
 
+### ‘Artistic-1.0’ vs ‘Artistic-1.0-Perl’
+
+The difference between ‘Artistic-1.0’ and ‘Artistic-1.0-Perl’ includes two
+changes:
+
+1. The latter has an expanded ‘Clause 7’ that adds some specificity:
+
+    Artistic-1.0 Clause 7:
+
+    7. C or perl subroutines supplied by you and linked into this Package shall
+       not be considered part of this Package.
+
+    Artistic-1.0-Perl Clause 7:
+
+    7. C subroutines (or comparably compiled subroutines in other languages)
+       supplied by you and linked into this Package in order to emulate
+       subroutines and variables of the language defined by this Package shall
+       not be considered part of this Package, but are the equivalent of input
+       as in Paragraph 6, provided these subroutines do not change the language
+       in any way that would cause it to fail the regression tests for the
+       language.
+
+2. The latter adds ‘Clause 8’:
+
+    8. Aggregation of this Package with a commercial distribution is always
+       permitted provided that the use of this Package is embedded; that is,
+       when no overt attempt is made to make this Package’s interfaces visible
+       to the end user of the commercial distribution. Such use shall not be
+       construed as a distribution of this Package. 
+
+In the event those differences impact your use of a CPAN distribution, please
+contact the maintainer of the CPAN distribution for clarification. Yellow Jacket
+GNU/Linux can not provide clarification for you.
+
+### ‘Artistic-1.0-cl8’
+
 There is a third variant of the “Artistic 1.0” license with a SPDX identifier of
 ‘Artistic-1.0-cl8’ but I have not *yet* seen that license used with CPAN
-distributions.
+distributions. It has the added ‘Clause 8’ but lacks the expanded ‘Clause 7’.
 
 
 Artistic 2.0
